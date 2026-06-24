@@ -1,0 +1,53 @@
+{
+  "name": "@harborclient/plugin-api",
+  "version": "1.7.0",
+  "description": "TypeScript definitions for HarborClient plugin development",
+  "keywords": [
+    "harborclient",
+    "plugin",
+    "typescript",
+    "types"
+  ],
+  "homepage": "https://github.com/headzoo/harborclient-plugin-api",
+  "bugs": {
+    "url": "https://github.com/headzoo/harborclient-plugin-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/headzoo/harborclient-plugin-api.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Harbor",
+    "email": "harbor@example.com"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "release": "gh workflow run Release --ref main -f release_type=patch",
+    "release:patch": "gh workflow run Release --ref main -f release_type=patch",
+    "release:minor": "gh workflow run Release --ref main -f release_type=minor",
+    "release:major": "gh workflow run Release --ref main -f release_type=major"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.2",
+    "typescript": "^5.8.3"
+  }
+}
