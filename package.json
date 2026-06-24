@@ -8,13 +8,13 @@
     "typescript",
     "types"
   ],
-  "homepage": "https://github.com/headzoo/harborclient-plugin-api",
+  "homepage": "https://github.com/harborclient/plugin-api",
   "bugs": {
-    "url": "https://github.com/headzoo/harborclient-plugin-api/issues"
+    "url": "https://github.com/harborclient/plugin-api/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/headzoo/harborclient-plugin-api.git"
+    "url": "git+https://github.com/harborclient/plugin-api.git"
   },
   "license": "MIT",
   "author": {
@@ -26,6 +26,9 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts"
+    },
+    "./main": {
+      "types": "./dist/main.d.ts"
     }
   },
   "files": [

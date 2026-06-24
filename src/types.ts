@@ -687,6 +687,95 @@ export interface PluginCommands {
   execute(id: string, ...args: unknown[]): Promise<void>;
 }
 
+/**
+ * Options for picking a file through {@link PluginFs.pickFile}.
+ */
+export interface PluginFsPickFileOptions {
+  /**
+   * Dialog title.
+   */
+  title?: string;
+
+  /**
+   * File extension filters.
+   */
+  filters?: Array<{ name: string; extensions: string[] }>;
+
+  /**
+   * Allow multiple file selection.
+   */
+  multiple?: boolean;
+}
+
+/**
+ * Options for saving a file through {@link PluginFs.saveFile}.
+ */
+export interface PluginFsSaveFileOptions {
+  /**
+   * Suggested file name or path.
+   */
+  defaultPath?: string;
+
+  /**
+   * File extension filters.
+   */
+  filters?: Array<{ name: string; extensions: string[] }>;
+}
+
+/**
+ * Plugin-scoped filesystem access backed by main-process permission checks and a
+ * per-plugin path allowlist.
+ *
+ * Requires `filesystem:pick` for open/save dialogs, `filesystem:read` for
+ * {@link PluginFs.readFile}, and `filesystem:write` for {@link PluginFs.writeFile}.
+ * User-selected paths from pick/save dialogs are added to the allowlist automatically;
+ * the plugin package directory is allowlisted on load.
+ */
+export interface PluginFs {
+  /**
+   * Opens a native file picker. Returns absolute paths for selected files, or an
+   * empty array when the dialog is canceled. Requires the `filesystem:pick` permission.
+   *
+   * @param options - Optional dialog configuration.
+   */
+  pickFile: (options?: PluginFsPickFileOptions) => Promise<string[]>;
+
+  /**
+   * Opens a native directory picker. Returns the selected directory path, or `null`
+   * when canceled. Requires the `filesystem:pick` permission.
+   *
+   * @param defaultPath - Optional starting directory.
+   */
+  pickDirectory: (defaultPath?: string) => Promise<string | null>;
+
+  /**
+   * Opens a native save dialog and writes content to the chosen path. Returns the
+   * saved path, or `null` when canceled. Requires `filesystem:pick` and
+   * `filesystem:write` permissions.
+   *
+   * @param content - UTF-8 text to write.
+   * @param options - Optional dialog configuration.
+   */
+  saveFile: (content: string, options?: PluginFsSaveFileOptions) => Promise<string | null>;
+
+  /**
+   * Reads a UTF-8 text file from an allowlisted path. Requires the `filesystem:read`
+   * permission.
+   *
+   * @param path - Absolute path on the allowlist.
+   */
+  readFile: (path: string) => Promise<string>;
+
+  /**
+   * Writes UTF-8 text to an allowlisted path. Requires the `filesystem:write`
+   * permission.
+   *
+   * @param path - Absolute path on the allowlist.
+   * @param content - UTF-8 text to write.
+   */
+  writeFile: (path: string, content: string) => Promise<void>;
+}
+
 // ---------------------------------------------------------------------------
 // UI registration API
 // ---------------------------------------------------------------------------
@@ -872,10 +961,151 @@ export interface PluginContext {
   storage: PluginStorage;
 
   /**
+   * Plugin-scoped filesystem access. Requires `filesystem:*` permissions as documented
+   * on each method.
+   */
+  fs: PluginFs;
+
+  /**
    * Disposables to clean up on deactivation.
    *
    * Push every disposable returned by registration APIs here. The host disposes all
    * entries when the plugin deactivates.
    */
   subscriptions: Disposable[];
+}
+
+// ---------------------------------------------------------------------------
+// Main-process HTTP hooks and IPC
+// ---------------------------------------------------------------------------
+
+/**
+ * Serialized HTTP request passed to main-process before-send hooks.
+ *
+ * Handlers may mutate this object to change method, URL, headers, or body before
+ * the request is sent.
+ */
+export interface PluginHttpRequest {
+  /**
+   * HTTP method (for example `GET`, `POST`).
+   */
+  method: string;
+
+  /**
+   * Request URL including scheme, host, path, and query string.
+   */
+  url: string;
+
+  /**
+   * Outgoing request headers as a flat key/value map.
+   */
+  headers: Record<string, string>;
+
+  /**
+   * Request body content as a string.
+   */
+  body: string;
+}
+
+/**
+ * Serialized HTTP response passed to main-process after-send hooks.
+ */
+export interface PluginHttpResponse {
+  /**
+   * HTTP status code (for example `200`, `404`).
+   */
+  status: number;
+
+  /**
+   * HTTP status text (for example `OK`, `Not Found`).
+   */
+  statusText: string;
+
+  /**
+   * Response headers as a flat key/value map.
+   */
+  headers: Record<string, string>;
+
+  /**
+   * Response body content as a string.
+   */
+  body: string;
+}
+
+/**
+ * HTTP hook registration API available on {@link MainPluginContext.http}.
+ *
+ * Requires the `http` permission. Push returned disposables onto
+ * {@link MainPluginContext.subscriptions}.
+ */
+export interface PluginHttp {
+  /**
+   * Registers a callback that runs before each outgoing HTTP request.
+   *
+   * Mutate the request object to change method, URL, headers, or body.
+   *
+   * @param handler - Called with the mutable request snapshot.
+   * @returns A {@link Disposable} that unregisters the handler when disposed.
+   */
+  onBeforeSend(handler: (request: PluginHttpRequest) => void | Promise<void>): Disposable;
+
+  /**
+   * Registers a callback that runs after the response is received.
+   *
+   * @param handler - Called with the request that was sent and the response payload.
+   * @returns A {@link Disposable} that unregisters the handler when disposed.
+   */
+  onAfterSend(
+    handler: (request: PluginHttpRequest, response: PluginHttpResponse) => void | Promise<void>
+  ): Disposable;
+}
+
+/**
+ * Custom IPC registration API available on {@link MainPluginContext.ipc}.
+ *
+ * Exposes RPC channels callable from the renderer half of the same plugin.
+ * Requires the `ipc` permission. Push returned disposables onto
+ * {@link MainPluginContext.subscriptions}.
+ */
+export interface PluginIpc {
+  /**
+   * Registers a handler for a plugin-scoped IPC channel.
+   *
+   * @param channel - Channel name unique within this plugin.
+   * @param handler - Called when the renderer invokes this channel.
+   * @returns A {@link Disposable} that unregisters the handler when disposed.
+   */
+  handle(channel: string, handler: (...args: unknown[]) => unknown): Disposable;
+}
+
+/**
+ * The plugin API surface passed as `hc` to your main entry's `activate(hc)` function.
+ *
+ * Main entries run inside the SES-hardened utilityProcess — not in the renderer.
+ * Use this entry for HTTP hooks and custom IPC, not for React UI. Export
+ * `activate(hc: MainPluginContext)` and optionally `deactivate()` from your main bundle.
+ */
+export interface MainPluginContext {
+  /**
+   * Disposables to clean up on deactivation.
+   *
+   * Push every disposable returned by registration APIs here. The host disposes all
+   * entries when the plugin deactivates.
+   */
+  subscriptions: Disposable[];
+
+  /**
+   * Plugin-scoped persistent storage. Requires the `storage` permission.
+   */
+  storage: PluginStorage;
+
+  /**
+   * HTTP hook registration. Requires the `http` permission.
+   */
+  http: PluginHttp;
+
+  /**
+   * Custom IPC handler registration. Requires the `ipc` permission.
+   */
+  ipc: PluginIpc;
 }

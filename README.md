@@ -12,7 +12,9 @@ pnpm add -D @harborclient/plugin-api
 
 ## Usage
 
-Import types in your plugin entry module:
+### Renderer entry
+
+Import types in your renderer entry module:
 
 ```tsx
 import type { PluginContext } from '@harborclient/plugin-api';
@@ -27,6 +29,22 @@ export function deactivate(): void {
 ```
 
 Your plugin should mark `react` and `react-dom` as external in your bundler and use `hc.react` at runtime instead of bundling React.
+
+### Main entry
+
+Main entries run in the SES utilityProcess for HTTP hooks and custom IPC — not for React UI. Import `MainPluginContext` from the root package or `@harborclient/plugin-api/main` for main-only plugins:
+
+```typescript
+import type { MainPluginContext } from '@harborclient/plugin-api/main';
+
+export function activate(hc: MainPluginContext): void {
+  hc.subscriptions.push(
+    hc.http.onBeforeSend((request) => {
+      request.headers['X-Trace'] = '1';
+    })
+  );
+}
+```
 
 ## License
 

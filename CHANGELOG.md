@@ -4,4 +4,5 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
-- Initial standalone npm package extracted from HarborClient monorepo.
+- Add main-process types (`MainPluginContext`, `PluginHttp`, `PluginIpc`, `PluginHttpRequest`, `PluginHttpResponse`) and `@harborclient/plugin-api/main` subpath export.
+- Add renderer `PluginFs` types and `fs` on `PluginContext`.
