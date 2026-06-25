@@ -1,7 +1,7 @@
 {
   "name": "@harborclient/plugin-api",
   "version": "0.2.5",
-  "description": "TypeScript SDK and React runtime helpers for HarborClient plugin development.",
+  "description": "TypeScript SDK for HarborClient plugin development.",
   "keywords": [
     "harborclient",
     "plugin",
