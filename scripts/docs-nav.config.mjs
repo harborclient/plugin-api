@@ -21,17 +21,52 @@ export const syncedPages = [];
  */
 export const docsNav = [
   { kind: 'overview', title: 'Introduction' },
-  { kind: 'page', slug: "install", title: "Install" },
-  { kind: 'page', slug: 'usage', title: 'Usage', maxDepth: 3 },
-  { kind: 'page', slug: "license", title: "License" },
+  { kind: 'page', slug: 'install', title: 'Install' },
+  { kind: 'page', slug: 'usage', title: 'Quick start', maxDepth: 2 },
+  { kind: 'page', slug: 'package-layout', title: 'Package layout' },
+  { kind: 'page', slug: 'manifest', title: 'Manifest', maxDepth: 3 },
+  { kind: 'page', slug: 'permissions', title: 'Permissions' },
+  { kind: 'page', slug: 'architecture', title: 'Architecture', maxDepth: 2 },
+  { kind: 'page', slug: 'building', title: 'Building' },
+  { kind: 'page', slug: 'dev-workflow', title: 'Dev workflow', maxDepth: 2 },
+  { kind: 'page', slug: 'renderer-overview', title: 'Renderer API', maxDepth: 3 },
+  { kind: 'page', slug: 'renderer-ui', title: 'UI contributions', maxDepth: 3 },
+  { kind: 'page', slug: 'renderer-data', title: 'Themes and storage', maxDepth: 3 },
+  { kind: 'page', slug: 'main-api', title: 'Main API', maxDepth: 2 },
+  {
+    kind: 'group',
+    slug: 'examples',
+    title: 'Examples',
+    pages: [
+      {
+        name: 'request-logger',
+        source: 'docs/examples/request-logger.md',
+        title: 'Request logger'
+      },
+      {
+        name: 'request-audit-tab',
+        source: 'docs/examples/request-audit-tab.md',
+        title: 'Request audit tab'
+      },
+      {
+        name: 'solarized-theme',
+        source: 'docs/examples/solarized-theme.md',
+        title: 'Solarized theme'
+      }
+    ]
+  },
+  { kind: 'page', slug: 'marketplace', title: 'Marketplace', maxDepth: 2 },
+  { kind: 'page', slug: 'performance', title: 'Performance' },
+  { kind: 'page', slug: 'vs-request-scripts', title: 'Plugins vs scripts' },
+  { kind: 'page', slug: 'license', title: 'License' }
 ];
 
 /** Slugs of canonical overview pages committed under docs/<slug>/index.md. */
 export const groupOverviewSlugs = new Set(
-  docsNav.filter((entry) => entry.kind === 'group').map((entry) => entry.slug),
+  docsNav.filter((entry) => entry.kind === 'group').map((entry) => entry.slug)
 );
 
 /** Slugs of canonical guide pages committed as docs/<slug>.md. */
 export const canonicalPageSlugs = new Set(
-  docsNav.filter((entry) => entry.kind === 'page').map((entry) => entry.slug),
+  docsNav.filter((entry) => entry.kind === 'page').map((entry) => entry.slug)
 );

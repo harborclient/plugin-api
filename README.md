@@ -1,35 +1,34 @@
 # @harborclient/plugin-api
 
-**Full documentation:** [https://harborclient.github.io/plugin-api/](https://harborclient.github.io/plugin-api/)
+TypeScript definitions, utility modules, and React runtime helpers for [HarborClient](https://harborclient.com/) plugin development.
 
-**TypeScript definitions and React runtime helpers for HarborClient plugin development.**
+**Documentation:** [https://harborclient.github.io/plugin-api/](https://harborclient.github.io/plugin-api/)
 
-`@harborclient/plugin-api` is a dev dependency for HarborClient plugin authors:
+Install as a **dev dependency** in your plugin project. The package ships type declarations, HTTP/storage/UI helpers, and a JSX runtime that forwards to the host's React instance via `installReact(hc.react)`.
 
-- **JSX runtime:** Forward to the host's React instance via `installReact(hc.react)` — do not bundle React in your plugin.
-- **Renderer types:** `PluginContext`, hooks from `@harborclient/plugin-api/react`, and esbuild/TypeScript JSX configuration.
-- **Main-process types:** `MainPluginContext` from `@harborclient/plugin-api/main` for HTTP hooks and custom IPC.
+Requires HarborClient **>=1.9.0** when using `hc.pluginId`, renderer HTTP lifecycle events, typed IPC invoke, and host request commands.
 
-## Documentation
-
-| Topic | Link |
-| --- | --- |
-| Getting started | [Introduction](https://harborclient.github.io/plugin-api/) |
-| Installation | [Install](https://harborclient.github.io/plugin-api/install) |
-| Usage | [Usage](https://harborclient.github.io/plugin-api/usage) |
-
-Canonical docs live in [`docs/`](./docs/). Edit those pages directly, then run `pnpm docs:build:nav` to refresh the VitePress sidebar.
-
-## Development
+## Install
 
 ```bash
-pnpm install
-pnpm build
-pnpm lint
-pnpm typecheck
-pnpm docs:serve    # VitePress dev server with nav watcher
-pnpm docs:build    # production docs build
+pnpm add -D @harborclient/plugin-api
 ```
+
+See the [install guide](https://harborclient.github.io/plugin-api/install) for version requirements.
+
+## Quick start
+
+```tsx
+import { installReact } from '@harborclient/plugin-api';
+import type { PluginContext } from '@harborclient/plugin-api';
+
+export function activate(hc: PluginContext): void {
+  installReact(hc.react);
+  // register contributions…
+}
+```
+
+Full guides — package layout, manifest, APIs, examples, and dev workflow — live in the [plugin development docs](https://harborclient.github.io/plugin-api/).
 
 ## License
 

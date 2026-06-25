@@ -40,7 +40,7 @@ const parseIntroAndSections = (markdown) => {
       return {
         title,
         anchor: toAnchor(title),
-        body: `${body.slice(start, end).trimEnd()}\n`,
+        body: `${body.slice(start, end).trimEnd()}\n`
       };
     })
     .filter((section) => !SKIP_SECTION_TITLES.has(section.title));
@@ -88,7 +88,7 @@ const buildAnchorMap = (headings) => {
     if (currentSectionSlug) {
       anchorMap.set(heading.anchor, {
         slug: currentSectionSlug,
-        isSectionRoot: false,
+        isSectionRoot: false
       });
     }
   }
@@ -117,8 +117,8 @@ const buildNavConfigFile = (sections) => {
     "  { kind: 'overview', title: 'Introduction' }",
     ...sections.map(
       (section) =>
-        `  { kind: 'page', slug: ${JSON.stringify(section.anchor)}, title: ${JSON.stringify(normalizeHeadingText(section.title))} }`,
-    ),
+        `  { kind: 'page', slug: ${JSON.stringify(section.anchor)}, title: ${JSON.stringify(normalizeHeadingText(section.title))} }`
+    )
   ];
 
   const serializedNav = `[\n${navLines.join(',\n')},\n]`;
@@ -140,23 +140,23 @@ const buildNavConfigFile = (sections) => {
     ' * Top-level docs navigation entries in sidebar order.',
     ' *',
     ' * @type {Array<',
-    ' *   | { kind: \'overview\'; title: string }',
-    ' *   | { kind: \'page\'; slug: string; title: string; maxDepth?: number; pinnedBottom?: true }',
-    ' *   | { kind: \'group\'; slug: string; title: string; pages: SyncedDocPage[] }',
+    " *   | { kind: 'overview'; title: string }",
+    " *   | { kind: 'page'; slug: string; title: string; maxDepth?: number; pinnedBottom?: true }",
+    " *   | { kind: 'group'; slug: string; title: string; pages: SyncedDocPage[] }",
     ' * >}',
     ' */',
     `export const docsNav = ${serializedNav};`,
     '',
     '/** Slugs of canonical overview pages committed under docs/<slug>/index.md. */',
     'export const groupOverviewSlugs = new Set(',
-    '  docsNav.filter((entry) => entry.kind === \'group\').map((entry) => entry.slug),',
+    "  docsNav.filter((entry) => entry.kind === 'group').map((entry) => entry.slug),",
     ');',
     '',
     '/** Slugs of canonical guide pages committed as docs/<slug>.md. */',
     'export const canonicalPageSlugs = new Set(',
-    '  docsNav.filter((entry) => entry.kind === \'page\').map((entry) => entry.slug),',
+    "  docsNav.filter((entry) => entry.kind === 'page').map((entry) => entry.slug),",
     ');',
-    '',
+    ''
   ].join('\n');
 };
 
@@ -172,12 +172,12 @@ for (const section of sections) {
   const pageMarkdown = promoteHeadingLevels(section.body);
   await writeFile(
     path.join(docsDir, `${section.anchor}.md`),
-    rewriteMarkdownLinks(pageMarkdown, { anchorMap }),
+    rewriteMarkdownLinks(pageMarkdown, { anchorMap })
   );
 }
 
 await writeFile(navConfigPath, buildNavConfigFile(sections));
 
 console.log(
-  `Split README.md into docs/index.md and ${sections.length} section page(s); updated ${path.relative(repoDir, navConfigPath)}`,
+  `Split README.md into docs/index.md and ${sections.length} section page(s); updated ${path.relative(repoDir, navConfigPath)}`
 );

@@ -54,7 +54,7 @@ export const getHeadings = (markdown) => {
       return {
         level: match[1].length,
         title,
-        anchor: anchorCount === 0 ? anchor : `${anchor}-${anchorCount}`,
+        anchor: anchorCount === 0 ? anchor : `${anchor}-${anchorCount}`
       };
     })
     .filter((heading) => heading.title !== 'Table of contents');

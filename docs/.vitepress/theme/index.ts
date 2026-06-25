@@ -29,5 +29,5 @@ export default {
     ctx.router.onAfterRouteChanged = () => {
       window.requestAnimationFrame(syncDocImageLinks);
     };
-  },
+  }
 } satisfies Theme;

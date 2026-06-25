@@ -56,12 +56,12 @@ const buildPageSidebarItems = (slug, headings, maxSectionDepth = 4) => {
   let currentSubSection;
 
   for (const heading of headings.filter(
-    (item) => item.level >= 2 && item.level <= maxSectionDepth,
+    (item) => item.level >= 2 && item.level <= maxSectionDepth
   )) {
     if (heading.level === 2) {
       const node = {
         text: toSidebarText(heading.title),
-        link: buildPageLink('', slug, heading.anchor),
+        link: buildPageLink('', slug, heading.anchor)
       };
 
       items.push(node);
@@ -73,7 +73,7 @@ const buildPageSidebarItems = (slug, headings, maxSectionDepth = 4) => {
     if (heading.level === 3 && currentSection?.level === 2 && maxSectionDepth >= 3) {
       const child = {
         text: toSidebarText(heading.title),
-        link: buildPageLink('', slug, heading.anchor),
+        link: buildPageLink('', slug, heading.anchor)
       };
 
       if (!currentSection.node.items) {
@@ -93,7 +93,7 @@ const buildPageSidebarItems = (slug, headings, maxSectionDepth = 4) => {
     ) {
       const child = {
         text: toSidebarText(heading.title),
-        link: buildPageLink('', slug, heading.anchor),
+        link: buildPageLink('', slug, heading.anchor)
       };
 
       if (!currentSubSection.node.items) {
@@ -152,8 +152,8 @@ const buildVitePressSidebar = async (nav) => {
         collapsed: false,
         items: entry.pages.map((page) => ({
           text: page.title,
-          link: `/${entry.slug}/${page.name}`,
-        })),
+          link: `/${entry.slug}/${page.name}`
+        }))
       });
       continue;
     }
@@ -164,7 +164,7 @@ const buildVitePressSidebar = async (nav) => {
     const subItems = buildPageSidebarItems(entry.slug, headings, entry.maxDepth ?? 3);
     const node = {
       text: entry.title,
-      link: `/${entry.slug}`,
+      link: `/${entry.slug}`
     };
 
     if (subItems.length > 0) {
@@ -191,7 +191,7 @@ const buildVitePressSidebarFile = (sidebar) =>
     '',
     'export const sidebar: DefaultTheme.SidebarItem[] = ',
     `${JSON.stringify(sidebar, null, 2)}`,
-    '',
+    ''
   ].join('\n');
 
 /**
@@ -237,5 +237,5 @@ for (const page of syncedPages) {
 
 console.log(
   `Updated ${path.relative(repoDir, sidebarGeneratedPath)}` +
-    (syncedCount > 0 ? ` and synced ${syncedCount} markdown page(s)` : ''),
+    (syncedCount > 0 ? ` and synced ${syncedCount} markdown page(s)` : '')
 );

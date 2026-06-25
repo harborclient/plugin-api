@@ -1,0 +1,17 @@
+# Permissions
+
+HarborClient uses a trusted-extension model similar to VS Code or Obsidian. Permissions are shown at install time and enforced in the main process on every privileged `hc.*` call.
+
+| Permission         | Grants                                                                                             |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| `ui`               | All `hc.ui.register*` methods, `hc.themes.register`, `hc.ui.showToast`, and `hc.commands.register` |
+| `storage`          | Plugin-scoped persistent key-value storage via `hc.storage`                                        |
+| `filesystem:pick`  | Open and save dialogs; read and write only user-selected paths                                     |
+| `filesystem:read`  | Read from allowlisted paths (plugin directory plus granted paths)                                  |
+| `filesystem:write` | Write to allowlisted paths                                                                         |
+| `http`             | Hook into or send HTTP from main via `hc.http`                                                     |
+| `ipc`              | Register custom IPC handlers via `hc.ipc.handle`                                                   |
+
+Filesystem access never uses raw Node `fs` in plugin code. Use `hc.fs.*` helpers only; the host checks permissions and path allowlists on each call.
+
+Declare required permissions in [Manifest](/manifest) under `permissions`.

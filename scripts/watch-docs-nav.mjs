@@ -17,7 +17,7 @@ const watchFiles = [
   path.join(repoDir, 'scripts/docs-slugger.mjs'),
   path.join(repoDir, 'scripts/docs-link-rewriter.mjs'),
   path.join(repoDir, 'scripts/docs-site.config.mjs'),
-  path.join(repoDir, 'scripts/assert-docs-slugs.mjs'),
+  path.join(repoDir, 'scripts/assert-docs-slugs.mjs')
 ];
 
 let debounceTimer = null;
@@ -43,7 +43,7 @@ const runBuild = () => {
 
         const nav = spawn('node', [path.join(scriptDir, 'build-docs-nav.mjs')], {
           cwd: repoDir,
-          stdio: 'inherit',
+          stdio: 'inherit'
         });
 
         nav.on('error', reject);
@@ -55,7 +55,7 @@ const runBuild = () => {
 
           const slugs = spawn('node', [path.join(scriptDir, 'assert-docs-slugs.mjs')], {
             cwd: repoDir,
-            stdio: 'inherit',
+            stdio: 'inherit'
           });
 
           slugs.on('error', reject);
@@ -69,7 +69,7 @@ const runBuild = () => {
             resolve();
           });
         });
-      }),
+      })
   );
 
   buildChain = buildChain.finally(() => {
@@ -134,7 +134,7 @@ const startWatching = () => {
     watchers.push(
       watch(filePath, () => {
         scheduleBuild();
-      }),
+      })
     );
   }
 
@@ -144,7 +144,7 @@ const startWatching = () => {
         if (shouldTriggerRebuild(filename, dirPath)) {
           scheduleBuild();
         }
-      }),
+      })
     );
   }
 };

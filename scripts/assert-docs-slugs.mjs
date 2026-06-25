@@ -5,7 +5,7 @@ import {
   canonicalPageSlugs,
   docsNav,
   groupOverviewSlugs,
-  syncedPages,
+  syncedPages
 } from './docs-nav.config.mjs';
 import { getHeadings, toAnchor } from './docs-slugger.mjs';
 
@@ -31,7 +31,7 @@ const verifyHeadingSlugs = (label, headings) => {
       mismatches.push({
         title: heading.title,
         anchor: heading.anchor,
-        baseAnchor,
+        baseAnchor
       });
     }
   }
@@ -72,7 +72,7 @@ const loadCanonicalPages = async () => {
   pages.set('/', {
     label: 'docs/index.md',
     markdown: indexMarkdown,
-    headings: getHeadings(indexMarkdown),
+    headings: getHeadings(indexMarkdown)
   });
 
   for (const slug of canonicalPageSlugs) {
@@ -81,7 +81,7 @@ const loadCanonicalPages = async () => {
     pages.set(`/${slug}`, {
       label: `docs/${slug}.md`,
       markdown,
-      headings: getHeadings(markdown),
+      headings: getHeadings(markdown)
     });
   }
 
@@ -91,7 +91,7 @@ const loadCanonicalPages = async () => {
     pages.set(`/${slug}/`, {
       label: `docs/${slug}/index.md`,
       markdown,
-      headings: getHeadings(markdown),
+      headings: getHeadings(markdown)
     });
     pages.set(`/${slug}`, pages.get(`/${slug}/`));
   }
@@ -125,7 +125,7 @@ const buildRouteAnchorMap = async (canonicalPages) => {
         const markdown = await readFile(pagePath, 'utf8');
         routeAnchors.set(
           `/${entry.slug}/${page.name}`,
-          new Set(getHeadings(markdown).map((heading) => heading.anchor)),
+          new Set(getHeadings(markdown).map((heading) => heading.anchor))
         );
       }
     }
@@ -134,9 +134,7 @@ const buildRouteAnchorMap = async (canonicalPages) => {
   for (const page of syncedPages) {
     const targetDir = page.targetDir ?? 'docs';
     const route =
-      targetDir === 'docs'
-        ? `/${page.name}`
-        : `/${targetDir.replace(/^docs\//, '')}/${page.name}`;
+      targetDir === 'docs' ? `/${page.name}` : `/${targetDir.replace(/^docs\//, '')}/${page.name}`;
 
     if (await pathExists(path.join(repoDir, targetDir, `${page.name}.md`))) {
       routeAnchors.set(route, new Set());
@@ -283,12 +281,12 @@ const verifyInternalLinks = (canonicalPages, routeAnchors) => {
  */
 const verifyGfmAlerts = (label, markdown) => {
   const malformedGfmAlerts = [
-    ...markdown.matchAll(/^(?!\s*>)\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/gim),
+    ...markdown.matchAll(/^(?!\s*>)\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/gim)
   ];
 
   if (malformedGfmAlerts.length > 0) {
     console.error(
-      `Malformed GitHub alerts in ${label}: the marker line must be a blockquote (\`> [!TIP]\`), not a bare \`[!TIP]\` line.`,
+      `Malformed GitHub alerts in ${label}: the marker line must be a blockquote (\`> [!TIP]\`), not a bare \`[!TIP]\` line.`
     );
     console.error(malformedGfmAlerts.map((match) => match[0]));
     process.exit(1);
@@ -308,5 +306,5 @@ for (const page of canonicalPages.values()) {
 verifyInternalLinks(canonicalPages, routeAnchors);
 
 console.log(
-  `Verified ${docsNav.length} manifest entries, ${canonicalPages.size} canonical docs routes, and ${routeAnchors.size} routable paths.`,
+  `Verified ${docsNav.length} manifest entries, ${canonicalPages.size} canonical docs routes, and ${routeAnchors.size} routable paths.`
 );

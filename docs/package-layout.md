@@ -1,0 +1,25 @@
+# Package layout
+
+Author source in JS or TS, bundle to `dist/*.js`, then pack the manifest and output files into a `.hcp` file (ZIP format):
+
+```
+my-plugin/
+├── manifest.json
+├── README.md               # or description.md — full Markdown listing (see manifest)
+├── assets/
+│   ├── icon.png            # plugin icon (referenced by manifest)
+│   └── screenshots/        # gallery images for Settings → Plugins detail
+│       ├── settings.png
+│       └── sidebar.png
+├── src/                    # author source (optional, not loaded at runtime)
+│   ├── renderer.tsx
+│   └── main.ts
+└── dist/
+    ├── renderer.js         # referenced by manifest "renderer"
+    ├── main.js             # referenced by manifest "main" (optional)
+    └── theme.css           # optional stylesheet for contributes.themes
+```
+
+At runtime HarborClient reads `manifest.json`, the Markdown description, icon, screenshots, and the files referenced under `dist/`.
+
+See [Manifest](/manifest) for field reference and [Building](/building) for packaging steps.

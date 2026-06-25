@@ -13,12 +13,12 @@ export const sidebar: DefaultTheme.SidebarItem[] =
     "link": "/install"
   },
   {
-    "text": "Usage",
+    "text": "Quick start",
     "link": "/usage",
     "items": [
       {
-        "text": "Renderer entry with JSX",
-        "link": "/usage#renderer-entry-with-jsx"
+        "text": "Renderer entry",
+        "link": "/usage#renderer-entry"
       },
       {
         "text": "Main entry",
@@ -26,6 +26,366 @@ export const sidebar: DefaultTheme.SidebarItem[] =
       }
     ],
     "collapsed": false
+  },
+  {
+    "text": "Package layout",
+    "link": "/package-layout"
+  },
+  {
+    "text": "Manifest",
+    "link": "/manifest",
+    "items": [
+      {
+        "text": "Plugin metadata",
+        "link": "/manifest#plugin-metadata",
+        "items": [
+          {
+            "text": "description",
+            "link": "/manifest#description"
+          }
+        ],
+        "collapsed": false
+      },
+      {
+        "text": "Permissions",
+        "link": "/manifest#permissions",
+        "items": [
+          {
+            "text": "icon",
+            "link": "/manifest#icon"
+          },
+          {
+            "text": "Screenshots",
+            "link": "/manifest#screenshots"
+          },
+          {
+            "text": "company, homepage, and bugs",
+            "link": "/manifest#company-homepage-and-bugs"
+          }
+        ],
+        "collapsed": false
+      },
+      {
+        "text": "Contribution types",
+        "link": "/manifest#contribution-types"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Permissions",
+    "link": "/permissions"
+  },
+  {
+    "text": "Architecture",
+    "link": "/architecture",
+    "items": [
+      {
+        "text": "Two runtimes",
+        "link": "/architecture#two-runtimes"
+      },
+      {
+        "text": "Lifecycle",
+        "link": "/architecture#lifecycle"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Building",
+    "link": "/building",
+    "items": [
+      {
+        "text": "Packaging as .hcp",
+        "link": "/building#packaging-as-hcp"
+      },
+      {
+        "text": "Recommended project setup",
+        "link": "/building#recommended-project-setup"
+      },
+      {
+        "text": "TypeScript",
+        "link": "/building#typescript"
+      },
+      {
+        "text": "Main entry",
+        "link": "/building#main-entry"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Dev workflow",
+    "link": "/dev-workflow",
+    "items": [
+      {
+        "text": "Load unpacked",
+        "link": "/dev-workflow#load-unpacked"
+      },
+      {
+        "text": "Hot reload",
+        "link": "/dev-workflow#hot-reload"
+      },
+      {
+        "text": "Recommended dev workflow",
+        "link": "/dev-workflow#recommended-dev-workflow"
+      },
+      {
+        "text": "Load unpacked at startup (optional)",
+        "link": "/dev-workflow#load-unpacked-at-startup-optional"
+      },
+      {
+        "text": "Unpacked vs installed",
+        "link": "/dev-workflow#unpacked-vs-installed"
+      },
+      {
+        "text": "Host IPC (development)",
+        "link": "/dev-workflow#host-ipc-development"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Renderer API",
+    "link": "/renderer-overview",
+    "items": [
+      {
+        "text": "hc.pluginId",
+        "link": "/renderer-overview#hcpluginid"
+      },
+      {
+        "text": "hc.react",
+        "link": "/renderer-overview#hcreact"
+      },
+      {
+        "text": "React and JSX",
+        "link": "/renderer-overview#react-and-jsx"
+      },
+      {
+        "text": "Related reference",
+        "link": "/renderer-overview#related-reference"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "UI contributions",
+    "link": "/renderer-ui",
+    "items": [
+      {
+        "text": "hc.ui.registerSettingsSection(section)",
+        "link": "/renderer-ui#hcuiregistersettingssectionsection"
+      },
+      {
+        "text": "hc.ui.registerSidebarPanel(panel)",
+        "link": "/renderer-ui#hcuiregistersidebarpanelpanel"
+      },
+      {
+        "text": "hc.ui.registerSidebarSection(section)",
+        "link": "/renderer-ui#hcuiregistersidebarsectionsection"
+      },
+      {
+        "text": "hc.ui.registerMainView(view)",
+        "link": "/renderer-ui#hcuiregistermainviewview"
+      },
+      {
+        "text": "hc.ui.registerRequestTab(tab)",
+        "link": "/renderer-ui#hcuiregisterrequesttabtab"
+      },
+      {
+        "text": "hc.ui.registerResponseTab(tab)",
+        "link": "/renderer-ui#hcuiregisterresponsetabtab"
+      },
+      {
+        "text": "hc.ui.registerCollectionSettingsTab(tab)",
+        "link": "/renderer-ui#hcuiregistercollectionsettingstabtab"
+      },
+      {
+        "text": "hc.ui.registerFooterPanel(panel)",
+        "link": "/renderer-ui#hcuiregisterfooterpanelpanel"
+      },
+      {
+        "text": "hc.ui.registerMenuItem(item)",
+        "link": "/renderer-ui#hcuiregistermenuitemitem"
+      },
+      {
+        "text": "hc.ui.registerRequestToolbarAction(action)",
+        "link": "/renderer-ui#hcuiregisterrequesttoolbaractionaction"
+      },
+      {
+        "text": "hc.ui.registerContextMenuItem(item)",
+        "link": "/renderer-ui#hcuiregistercontextmenuitemitem"
+      },
+      {
+        "text": "hc.ui.registerStatusBarItem(item)",
+        "link": "/renderer-ui#hcuiregisterstatusbaritemitem"
+      },
+      {
+        "text": "hc.ui.showToast(message, options?)",
+        "link": "/renderer-ui#hcuishowtoastmessage-options"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Themes and storage",
+    "link": "/renderer-data",
+    "items": [
+      {
+        "text": "hc.themes",
+        "link": "/renderer-data#hcthemes",
+        "items": [
+          {
+            "text": "hc.themes.register(theme)",
+            "link": "/renderer-data#hcthemesregistertheme"
+          },
+          {
+            "text": "hc.themes.getActive()",
+            "link": "/renderer-data#hcthemesgetactive"
+          },
+          {
+            "text": "hc.themes.onDidChange(listener)",
+            "link": "/renderer-data#hcthemesondidchangelistener"
+          },
+          {
+            "text": "Theme color tokens",
+            "link": "/renderer-data#theme-color-tokens"
+          }
+        ],
+        "collapsed": false
+      },
+      {
+        "text": "hc.commands",
+        "link": "/renderer-data#hccommands",
+        "items": [
+          {
+            "text": "hc.commands.register(id, handler)",
+            "link": "/renderer-data#hccommandsregisterid-handler"
+          },
+          {
+            "text": "hc.commands.execute(id, ...args)",
+            "link": "/renderer-data#hccommandsexecuteid-args"
+          }
+        ],
+        "collapsed": false
+      },
+      {
+        "text": "hc.storage",
+        "link": "/renderer-data#hcstorage",
+        "items": [
+          {
+            "text": "hc.storage.get(key)",
+            "link": "/renderer-data#hcstoragegetkey"
+          },
+          {
+            "text": "hc.storage.set(key, value)",
+            "link": "/renderer-data#hcstoragesetkey-value"
+          }
+        ],
+        "collapsed": false
+      },
+      {
+        "text": "hc.fs",
+        "link": "/renderer-data#hcfs",
+        "items": [
+          {
+            "text": "hc.fs.pickFile(options?)",
+            "link": "/renderer-data#hcfspickfileoptions"
+          },
+          {
+            "text": "hc.fs.pickDirectory(defaultPath?)",
+            "link": "/renderer-data#hcfspickdirectorydefaultpath"
+          },
+          {
+            "text": "hc.fs.saveFile(content, options?)",
+            "link": "/renderer-data#hcfssavefilecontent-options"
+          },
+          {
+            "text": "hc.fs.readFile(path)",
+            "link": "/renderer-data#hcfsreadfilepath"
+          },
+          {
+            "text": "hc.fs.writeFile(path, content)",
+            "link": "/renderer-data#hcfswritefilepath-content"
+          }
+        ],
+        "collapsed": false
+      },
+      {
+        "text": "hc.subscriptions",
+        "link": "/renderer-data#hcsubscriptions"
+      },
+      {
+        "text": "Not extensible",
+        "link": "/renderer-data#not-extensible"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Main API",
+    "link": "/main-api",
+    "items": [
+      {
+        "text": "hc.storage",
+        "link": "/main-api#hcstorage"
+      },
+      {
+        "text": "hc.http.onBeforeSend(handler)",
+        "link": "/main-api#hchttponbeforesendhandler"
+      },
+      {
+        "text": "hc.http.onAfterSend(handler)",
+        "link": "/main-api#hchttponaftersendhandler"
+      },
+      {
+        "text": "hc.ipc.handle(channel, handler)",
+        "link": "/main-api#hcipchandlechannel-handler"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Examples",
+    "link": "/examples/",
+    "collapsed": false,
+    "items": [
+      {
+        "text": "Request logger",
+        "link": "/examples/request-logger"
+      },
+      {
+        "text": "Request audit tab",
+        "link": "/examples/request-audit-tab"
+      },
+      {
+        "text": "Solarized theme",
+        "link": "/examples/solarized-theme"
+      }
+    ]
+  },
+  {
+    "text": "Marketplace",
+    "link": "/marketplace",
+    "items": [
+      {
+        "text": "Requirements",
+        "link": "/marketplace#requirements"
+      },
+      {
+        "text": "Catalog entry fields",
+        "link": "/marketplace#catalog-entry-fields"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Performance",
+    "link": "/performance"
+  },
+  {
+    "text": "Plugins vs scripts",
+    "link": "/vs-request-scripts"
   },
   {
     "text": "License",
