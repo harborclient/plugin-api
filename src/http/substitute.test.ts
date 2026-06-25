@@ -1,10 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 import type { AuthConfig } from '../types.js';
-import {
-  resolveAuthVariables,
-  substituteKeyValueRows,
-  substituteVariables
-} from './substitute.js';
+import { resolveAuthVariables, substituteKeyValueRows, substituteVariables } from './substitute.js';
 
 describe('substituteVariables', () => {
   it('replaces known placeholders', () => {

@@ -14,4 +14,6 @@ HarborClient uses a trusted-extension model similar to VS Code or Obsidian. Perm
 
 Filesystem access never uses raw Node `fs` in plugin code. Use `hc.fs.*` helpers only; the host checks permissions and path allowlists on each call.
 
+Paths the user selects through `hc.fs.pickFile`, `hc.fs.pickDirectory`, or `hc.fs.saveFile` are added to the allowlist automatically and **persist across app restarts**. The host restores those grants when the plugin loads again; plugins do not need to re-prompt every session for the same file.
+
 Declare required permissions in [Manifest](/manifest) under `permissions`.

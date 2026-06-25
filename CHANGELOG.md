@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.4.0 - 2026-06-25
+
+- Add `@harborclient/plugin-api/signing` with `signPlugin`, `verifyPlugin`, and CLI tools (`hc-plugin-sign`, `hc-plugin-verify`).
+
 ## 0.3.3 - 2026-06-25
 
 - Add `hc.host.sendRequest()` to send the active request editor tab from plugins.

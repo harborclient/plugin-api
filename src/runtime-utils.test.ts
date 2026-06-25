@@ -18,7 +18,9 @@ function withoutTextEncoder<T>(run: () => T): T {
 
 describe('randomId', () => {
   it('returns a UUID when crypto.randomUUID is available', () => {
-    const spy = jest.spyOn(globalThis.crypto, 'randomUUID').mockReturnValue('00000000-0000-4000-8000-000000000000');
+    const spy = jest
+      .spyOn(globalThis.crypto, 'randomUUID')
+      .mockReturnValue('00000000-0000-4000-8000-000000000000');
     expect(randomId()).toBe('00000000-0000-4000-8000-000000000000');
     spy.mockRestore();
   });
@@ -109,9 +111,9 @@ describe('truncateBody', () => {
 
     expect(result.truncated).toBe(true);
     expect(result.body.endsWith(`[truncated — body exceeded ${maxBytes} bytes]`)).toBe(true);
-    expect(byteLength(result.body.replace(/\n\n\[truncated — body exceeded \d+ bytes\]$/, ''))).toBeLessThanOrEqual(
-      maxBytes
-    );
+    expect(
+      byteLength(result.body.replace(/\n\n\[truncated — body exceeded \d+ bytes\]$/, ''))
+    ).toBeLessThanOrEqual(maxBytes);
   });
 
   it('uses a custom suffix when provided', () => {

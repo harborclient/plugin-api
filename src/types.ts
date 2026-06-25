@@ -837,6 +837,16 @@ export interface PluginFs {
    * @param content - UTF-8 text to write.
    */
   writeFile: (path: string, content: string) => Promise<void>;
+
+  /**
+   * Watches an allowlisted file for changes and invokes the listener when the file
+   * is modified. Requires the `filesystem:read` permission. Returns a {@link Disposable}
+   * that stops watching when disposed.
+   *
+   * @param path - Absolute path on the allowlist.
+   * @param listener - Called with the normalized path after a debounced change event.
+   */
+  watchFile: (path: string, listener: (path: string) => void) => Disposable;
 }
 
 // ---------------------------------------------------------------------------
@@ -1046,6 +1056,81 @@ export interface OpenRequestDraftPayload {
 }
 
 /**
+ * A single saved request to create when bulk-importing a collection from a plugin.
+ */
+export interface CreateCollectionRequest {
+  /**
+   * Display name for the saved request.
+   */
+  name: string;
+
+  /**
+   * HTTP method (for example `GET`, `POST`). Defaults to `GET` when omitted or invalid.
+   */
+  method?: string;
+
+  /**
+   * Request URL including scheme, host, path, and query string.
+   */
+  url?: string;
+
+  /**
+   * Outgoing request headers as a flat key/value map.
+   */
+  headers?: Record<string, string>;
+
+  /**
+   * Enabled query parameters for the request.
+   */
+  params?: OpenRequestDraftParam[];
+
+  /**
+   * Request body content as a string.
+   */
+  body?: string;
+
+  /**
+   * Request body encoding. Defaults to `text` when body is non-empty, otherwise `none`.
+   */
+  bodyType?: BodyType;
+
+  /**
+   * Folder name within the new collection. When omitted, the request is created at the collection root.
+   */
+  folder?: string;
+
+  /**
+   * Free-form notes stored on the saved request.
+   */
+  comment?: string;
+}
+
+/**
+ * Payload for {@link PluginHost.createCollection} — bulk-creates a collection with folders and requests.
+ */
+export interface CreateCollectionPayload {
+  /**
+   * Display name for the new collection.
+   */
+  name: string;
+
+  /**
+   * Saved requests to create inside the collection.
+   */
+  requests: CreateCollectionRequest[];
+}
+
+/**
+ * Result returned after bulk-creating a collection from plugin-provided requests.
+ */
+export interface CreateCollectionResult {
+  /**
+   * Database id of the new collection.
+   */
+  collectionId: number;
+}
+
+/**
  * Renderer-side HTTP lifecycle events for reacting to completed sends in the UI.
  *
  * Requires the `http` permission. Push returned disposables onto
@@ -1084,6 +1169,46 @@ export interface PluginIpcInvoker {
 }
 
 /**
+ * Variable row supplied by a plugin when creating or updating an environment.
+ */
+export interface PluginVariableInput {
+  /**
+   * Variable name referenced in {{key}} placeholders.
+   */
+  key: string;
+
+  /**
+   * Value substituted when the variable is resolved.
+   */
+  value: string;
+
+  /**
+   * Fallback value used when value is empty.
+   */
+  defaultValue?: string;
+
+  /**
+   * When true, value is included in collection exports.
+   */
+  share?: boolean;
+}
+
+/**
+ * Result returned after creating an environment from plugin-provided variables.
+ */
+export interface CreatedEnvironmentResult {
+  /**
+   * Database id of the new environment.
+   */
+  id: number;
+
+  /**
+   * Trimmed display name persisted for the environment.
+   */
+  name: string;
+}
+
+/**
  * Typed wrappers for built-in HarborClient request editor commands.
  *
  * Requires the `ui` permission. Prefer these over stringly-typed
@@ -1111,6 +1236,39 @@ export interface PluginHost {
    * No-op when a send is already in flight for the active tab.
    */
   sendRequest(): Promise<void>;
+
+  /**
+   * Creates a new environment, populates it with variables, and selects it as active.
+   *
+   * @param name - Display name for the new environment.
+   * @param variables - Initial variable rows.
+   */
+  createEnvironmentWithVariables(
+    name: string,
+    variables: PluginVariableInput[]
+  ): Promise<CreatedEnvironmentResult>;
+
+  /**
+   * Replaces all variables on an existing environment while preserving its name.
+   *
+   * @param environmentId - Target environment database id.
+   * @param variables - Variable rows that fully replace the current list.
+   */
+  updateEnvironmentVariables(
+    environmentId: number,
+    variables: PluginVariableInput[]
+  ): Promise<void>;
+
+  /**
+   * Creates a new collection populated with folders and saved requests supplied by a plugin.
+   *
+   * Requests with the same {@link CreateCollectionRequest.folder} value are grouped into one folder.
+   * Requests without a folder are created at the collection root.
+   *
+   * @param payload - Collection name and request rows to persist.
+   * @returns The database id of the created collection.
+   */
+  createCollection(payload: CreateCollectionPayload): Promise<CreateCollectionResult>;
 }
 
 // ---------------------------------------------------------------------------

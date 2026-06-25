@@ -123,12 +123,47 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "link": "/building#recommended-project-setup"
       },
       {
+        "text": "Sign your plugin",
+        "link": "/building#sign-your-plugin"
+      },
+      {
         "text": "TypeScript",
         "link": "/building#typescript"
       },
       {
         "text": "Main entry",
         "link": "/building#main-entry"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Signing",
+    "link": "/signing",
+    "items": [
+      {
+        "text": "Generate a key pair",
+        "link": "/signing#generate-a-key-pair"
+      },
+      {
+        "text": "Sign a plugin directory",
+        "link": "/signing#sign-a-plugin-directory"
+      },
+      {
+        "text": "Verify a plugin directory",
+        "link": "/signing#verify-a-plugin-directory"
+      },
+      {
+        "text": "Programmatic API",
+        "link": "/signing#programmatic-api"
+      },
+      {
+        "text": "signature.json format",
+        "link": "/signing#signaturejson-format"
+      },
+      {
+        "text": "Marketplace plugins",
+        "link": "/signing#marketplace-plugins"
       }
     ],
     "collapsed": false
@@ -381,7 +416,14 @@ export const sidebar: DefaultTheme.SidebarItem[] =
       },
       {
         "text": "hc.host",
-        "link": "/renderer-data#hchost"
+        "link": "/renderer-data#hchost",
+        "items": [
+          {
+            "text": "hc.host.createCollection(payload)",
+            "link": "/renderer-data#hchostcreatecollectionpayload"
+          }
+        ],
+        "collapsed": false
       },
       {
         "text": "hc.subscriptions",

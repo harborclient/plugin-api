@@ -146,7 +146,7 @@ await hc.storage.set('enabled', true);
 
 ## hc.fs
 
-Plugin-scoped filesystem access backed by main-process permission checks and a per-plugin path allowlist. Requires `filesystem:pick` for open/save dialogs, `filesystem:read` for `readFile`, and `filesystem:write` for `writeFile`. User-selected paths from pick/save dialogs are added to the allowlist automatically; the plugin package directory is allowlisted on load.
+Plugin-scoped filesystem access backed by main-process permission checks and a per-plugin path allowlist. Requires `filesystem:pick` for open/save dialogs, `filesystem:read` for `readFile`, and `filesystem:write` for `writeFile`. User-selected paths from pick/save dialogs are added to the allowlist automatically; the plugin package directory is allowlisted on load. User-granted paths persist across app restarts and are restored when the plugin loads again.
 
 ### hc.fs.pickFile(options?)
 
@@ -201,7 +201,35 @@ Requires the `ipc` permission. Call `hc.ipc.invoke(channel, ...args)` instead of
 
 Typed wrappers for built-in request editor commands. See [Renderer API](/renderer-overview).
 
-Requires the `ui` permission. Use `hc.host.openRequestDraft`, `hc.host.loadRequest`, and `hc.host.sendRequest` instead of `hc.commands.execute('harborclient:…')`.
+Requires the `ui` permission. Use `hc.host.openRequestDraft`, `hc.host.loadRequest`, `hc.host.sendRequest`, and `hc.host.createCollection` instead of `hc.commands.execute('harborclient:…')`.
+
+### hc.host.createCollection(payload)
+
+**Signature:** `(payload: CreateCollectionPayload) => Promise<CreateCollectionResult>`
+
+Bulk-creates a collection with folders and saved requests. Requests sharing the same `folder` string are grouped into one folder; requests without `folder` are created at the collection root.
+
+```typescript
+const { collectionId } = await hc.host.createCollection({
+  name: 'Petstore API',
+  requests: [
+    {
+      name: 'List pets',
+      method: 'GET',
+      url: 'https://api.example.com/pets',
+      folder: 'pets'
+    },
+    {
+      name: 'Create pet',
+      method: 'POST',
+      url: 'https://api.example.com/pets',
+      folder: 'pets',
+      body: '{"name":"Fluffy"}',
+      bodyType: 'json'
+    }
+  ]
+});
+```
 
 ## hc.subscriptions
 

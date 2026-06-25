@@ -28,6 +28,7 @@ export const docsNav = [
   { kind: 'page', slug: 'permissions', title: 'Permissions' },
   { kind: 'page', slug: 'architecture', title: 'Architecture', maxDepth: 2 },
   { kind: 'page', slug: 'building', title: 'Building' },
+  { kind: 'page', slug: 'signing', title: 'Signing', maxDepth: 2 },
   { kind: 'page', slug: 'dev-workflow', title: 'Dev workflow', maxDepth: 2 },
   { kind: 'page', slug: 'renderer-overview', title: 'Renderer API', maxDepth: 3 },
   { kind: 'page', slug: 'renderer-ui', title: 'UI contributions', maxDepth: 3 },
