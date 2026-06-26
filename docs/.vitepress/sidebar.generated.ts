@@ -426,6 +426,21 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "collapsed": false
       },
       {
+        "text": "Global variables",
+        "link": "/renderer-data#global-variables",
+        "items": [
+          {
+            "text": "Reading globals from plugins",
+            "link": "/renderer-data#reading-globals-from-plugins"
+          },
+          {
+            "text": "Updating globals from plugins",
+            "link": "/renderer-data#updating-globals-from-plugins"
+          }
+        ],
+        "collapsed": false
+      },
+      {
         "text": "hc.subscriptions",
         "link": "/renderer-data#hcsubscriptions"
       },
@@ -455,6 +470,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
       {
         "text": "hc.ipc.handle(channel, handler)",
         "link": "/main-api#hcipchandlechannel-handler"
+      },
+      {
+        "text": "hc.scripts",
+        "link": "/main-api#hcscripts"
       }
     ],
     "collapsed": false

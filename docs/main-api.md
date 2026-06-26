@@ -46,3 +46,64 @@ Expose an RPC channel callable from the renderer half of the same plugin. Requir
 Main-process hooks are invoked by posting work to the utilityProcess runner; the main process applies mutations and enforces permissions before and after each callback.
 
 See the [Request logger example](/examples/request-logger) for a main-only plugin using HTTP hooks.
+
+## hc.scripts
+
+**Signature:** `(init?: PluginScriptContextInit) => PluginScriptContext`
+
+Creates a script sandbox that exposes the **same `hc` object** as collection and request pre/post scripts. Use it to run tests, mutate a request snapshot, or read a response with `hc.response.json()` inside your main entry.
+
+No extra permission is required. Contexts start with only the hc API plus globals you inject with `setVariable` and `setFunction`.
+
+```typescript
+import type { MainPluginContext } from '@harborclient/sdk';
+
+export function activate(hc: MainPluginContext): void {
+  const context = hc.scripts.createContext({
+    phase: 'post',
+    request: {
+      method: 'GET',
+      url: 'https://api.example.com/users',
+      headers: [],
+      params: [],
+      body: '',
+      bodyType: 'none'
+    },
+    response: {
+      status: 200,
+      statusText: 'OK',
+      headers: { 'content-type': 'application/json' },
+      body: '{"ok":true}',
+      timeMs: 12,
+      sizeBytes: 11
+    },
+    variables: { token: 'abc' }
+  });
+
+  context.setFunction('console', console);
+
+  const result = context.run(`
+    const data = hc.response.json();
+    hc.test('is ok', () => hc.expect(data.ok).to.equal(true));
+    hc.variables.set('lastStatus', String(hc.response.code));
+    data.ok;
+  `);
+
+  // result.value === true
+  // result.tests, result.variableSets, result.logs, result.request, ...
+}
+```
+
+### PluginScriptContext
+
+| Method                     | Description                                                                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `setVariable(name, value)` | Injects a global variable visible to subsequent `run()` calls.                                                           |
+| `setFunction(name, fn)`    | Injects a global function; overrides built-in globals such as `console` when names collide.                              |
+| `run(script)`              | Evaluates script synchronously; returns {@link PluginScriptRunResult} with hc mutations and the last-expression `value`. |
+
+`run()` returns the full structured result: mutated `request`, `variableSets`, `collectionVariableSets`, `environmentVariableSets`, `globalVariableSets`, `collectionHeaders`, `tests`, `logs`, optional `error`, and `value` (the script's last expression).
+
+The hc surface matches pre/post request scripts: `hc.request`, `hc.variables`, `hc.collection`, `hc.environment`, `hc.globals`, `hc.test`, `hc.expect`, and `hc.response` (when `init.response` is provided). See [Request scripts](https://harborclient.com/request-scripts) for the full hc reference.
+
+Tests and logs accumulate across multiple `run()` calls on the same context. Request and variable mutations persist until you create a new context.

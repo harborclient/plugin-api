@@ -47,7 +47,7 @@ export function resolveAuthVariables(
  * Substitutes variables in key-value row values.
  *
  * @param rows - Header or param rows from the draft.
- * @param runtimeVars - Merged collection and environment variable map.
+ * @param runtimeVars - Merged global, collection, and environment variable map.
  */
 export function substituteKeyValueRows(
   rows: KeyValue[],

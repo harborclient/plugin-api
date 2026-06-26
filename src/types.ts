@@ -269,10 +269,10 @@ export interface RequestTabContext {
   collectionHeaders: Array<{ key: string; value: string; enabled: boolean }>;
 
   /**
-   * Merged collection and environment values for {{key}} substitution.
+   * Merged global, collection, and environment values for {{key}} substitution.
    *
-   * Environment overrides collection on duplicate keys. Empty variable values
-   * fall back to each variable's defaultValue (same as Send).
+   * Precedence: environment overrides collection overrides global on duplicate keys.
+   * Empty variable values fall back to each variable's defaultValue (same as Send).
    */
   variables: Record<string, string>;
 }
@@ -1470,6 +1470,295 @@ export interface PluginIpc {
   handle(channel: string, handler: (...args: unknown[]) => unknown): Disposable;
 }
 
+// ---------------------------------------------------------------------------
+// Main-process script sandbox (hc.scripts)
+// ---------------------------------------------------------------------------
+
+/**
+ * Enabled key/value row used in plugin script request and collection header context.
+ */
+export interface PluginScriptKeyValue {
+  /**
+   * Header or param name.
+   */
+  key: string;
+
+  /**
+   * Header or param value.
+   */
+  value: string;
+
+  /**
+   * When false, the row is ignored at send time.
+   */
+  enabled: boolean;
+}
+
+/**
+ * Request snapshot seeding {@link PluginScriptContextInit} for hc.request APIs.
+ */
+export interface PluginScriptRequestInit {
+  /**
+   * HTTP method (for example `GET`, `POST`).
+   */
+  method: string;
+
+  /**
+   * Request URL including scheme, host, path, and query string.
+   */
+  url: string;
+
+  /**
+   * Outgoing header rows.
+   */
+  headers: PluginScriptKeyValue[];
+
+  /**
+   * Query parameter rows.
+   */
+  params: PluginScriptKeyValue[];
+
+  /**
+   * Request body content as a string.
+   */
+  body: string;
+
+  /**
+   * Body encoding selected in the request editor.
+   */
+  bodyType: BodyType;
+}
+
+/**
+ * Response snapshot seeding {@link PluginScriptContextInit} for hc.response APIs.
+ */
+export interface PluginScriptResponseInit {
+  /**
+   * HTTP status code (for example `200`, `404`).
+   */
+  status: number;
+
+  /**
+   * HTTP status text (for example `OK`, `Not Found`).
+   */
+  statusText: string;
+
+  /**
+   * Response headers as a flat key/value map.
+   */
+  headers: Record<string, string>;
+
+  /**
+   * Response body content as a string.
+   */
+  body: string;
+
+  /**
+   * Time from send to response completion, in milliseconds.
+   */
+  timeMs: number;
+
+  /**
+   * Response body size in bytes.
+   */
+  sizeBytes: number;
+}
+
+/**
+ * Collection metadata seeding hc.collection.* inside a plugin script context.
+ */
+export interface PluginScriptCollectionInit {
+  /**
+   * Collection database id, or null when no collection is associated.
+   */
+  id: number | null;
+
+  /**
+   * Collection display name.
+   */
+  name: string;
+
+  /**
+   * Collection-level headers merged at send time.
+   */
+  headers: PluginScriptKeyValue[];
+}
+
+/**
+ * Environment metadata seeding hc.environment.* inside a plugin script context.
+ */
+export interface PluginScriptEnvironmentInit {
+  /**
+   * Active environment display name.
+   */
+  name: string;
+}
+
+/**
+ * Initial context for {@link PluginScripts.createContext}.
+ *
+ * Mirrors the pre/post request script sandbox input. All fields are optional;
+ * omitted fields use safe defaults (empty GET request, no variables, pre phase).
+ */
+export interface PluginScriptContextInit {
+  /**
+   * Script phase relative to the HTTP request. Default `'pre'`.
+   */
+  phase?: 'pre' | 'post';
+
+  /**
+   * Request snapshot exposed as hc.request.
+   */
+  request?: PluginScriptRequestInit;
+
+  /**
+   * Response snapshot exposed as hc.response when provided.
+   */
+  response?: PluginScriptResponseInit;
+
+  /**
+   * Merged runtime variables for hc.variables, hc.collection.variables,
+   * hc.environment.variables, and hc.globals lookups.
+   */
+  variables?: Record<string, string>;
+
+  /**
+   * Collection metadata and headers for hc.collection.* APIs.
+   */
+  collection?: PluginScriptCollectionInit;
+
+  /**
+   * Environment metadata for hc.environment.* APIs.
+   */
+  environment?: PluginScriptEnvironmentInit;
+}
+
+/**
+ * Result of a single hc.test assertion recorded by a plugin script run.
+ */
+export interface PluginScriptTestResult {
+  /**
+   * Test name passed to hc.test.
+   */
+  name: string;
+
+  /**
+   * Whether the test callback completed without throwing.
+   */
+  passed: boolean;
+
+  /**
+   * Assertion error message when passed is false.
+   */
+  error?: string;
+}
+
+/**
+ * Result returned from {@link PluginScriptContext.run}.
+ *
+ * Includes the same structured hc mutations as pre/post request scripts plus the
+ * script's last-expression value.
+ */
+export interface PluginScriptRunResult {
+  /**
+   * Last-expression value from the evaluated script when execution succeeded.
+   */
+  value: unknown;
+
+  /**
+   * Request snapshot after hc.request mutations during this context lifetime.
+   */
+  request: PluginScriptRequestInit;
+
+  /**
+   * Ephemeral variable sets from hc.variables.set.
+   */
+  variableSets: Record<string, string>;
+
+  /**
+   * Collection variable sets from hc.collection.variables.set.
+   */
+  collectionVariableSets: Record<string, string>;
+
+  /**
+   * Environment variable sets from hc.environment.variables.set.
+   */
+  environmentVariableSets: Record<string, string>;
+
+  /**
+   * Global variable sets from hc.globals.set.
+   */
+  globalVariableSets: Record<string, string>;
+
+  /**
+   * Collection headers after hc.collection.headers mutations.
+   */
+  collectionHeaders: PluginScriptKeyValue[];
+
+  /**
+   * hc.test results accumulated during this context lifetime.
+   */
+  tests: PluginScriptTestResult[];
+
+  /**
+   * Captured console.log and console.error output unless console was overridden.
+   */
+  logs: string[];
+
+  /**
+   * Sanitized runtime error when script evaluation throws.
+   */
+  error?: string;
+}
+
+/**
+ * Mutable sandbox for running scripts with the same hc API as pre/post request scripts.
+ */
+export interface PluginScriptContext {
+  /**
+   * Injects a global variable visible to subsequent run() calls.
+   *
+   * @param name - Global name exposed inside the compartment.
+   * @param value - Value assigned to the global.
+   */
+  setVariable(name: string, value: unknown): void;
+
+  /**
+   * Injects a global function visible to subsequent run() calls.
+   *
+   * Overrides built-in globals such as console when names collide.
+   *
+   * @param name - Global name exposed inside the compartment.
+   * @param fn - Callable injected into the sandbox.
+   */
+  setFunction(name: string, fn: (...args: unknown[]) => unknown): void;
+
+  /**
+   * Evaluates a script synchronously and returns hc mutations plus the last expression value.
+   *
+   * @param script - User-authored JavaScript evaluated as the compartment body.
+   * @returns Full hc result snapshot with the script's return value.
+   */
+  run(script: string): PluginScriptRunResult;
+}
+
+/**
+ * Script sandbox factory available on {@link MainPluginContext.scripts}.
+ *
+ * Runs user scripts with the same hc object as collection and request pre/post scripts
+ * (`hc.request`, `hc.variables`, `hc.collection`, `hc.environment`, `hc.globals`,
+ * `hc.test`, `hc.expect`, and `hc.response` when a response is provided).
+ */
+export interface PluginScripts {
+  /**
+   * Creates a fresh script context backed by the shared hc implementation.
+   *
+   * @param init - Optional request/response/variable/collection/environment seed data.
+   * @returns Context with setVariable, setFunction, and run.
+   */
+  createContext(init?: PluginScriptContextInit): PluginScriptContext;
+}
+
 /**
  * The plugin API surface passed as `hc` to your main entry's `activate(hc)` function.
  *
@@ -1500,4 +1789,12 @@ export interface MainPluginContext {
    * Custom IPC handler registration. Requires the `ipc` permission.
    */
   ipc: PluginIpc;
+
+  /**
+   * Script sandbox with the same hc API as pre/post request scripts.
+   *
+   * Available without an extra permission — contexts only expose hc plus globals
+   * you inject via setVariable and setFunction.
+   */
+  scripts: PluginScripts;
 }

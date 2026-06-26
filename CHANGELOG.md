@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Document global variables for plugins: precedence chain, `RequestTabContext.variables`, and `harborclient:updateGlobalVariables` host command.
+- Clarify `RequestTabContext.variables` JSDoc to include globals in the merge order.
+
 ## 0.4.3 - 2026-06-25
 
 - Rename npm package from `@harborclient/plugin-api` to `@harborclient/sdk`.

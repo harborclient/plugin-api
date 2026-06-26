@@ -124,7 +124,7 @@ hc.subscriptions.push(
 | `Component` | `React.ComponentType<{ context: RequestTabContext }>` | Tab content                  |
 | `order`     | `number`                                              | Sort order among editor tabs |
 
-Adds a segmented tab to the request editor (alongside Params, Headers, Body, and so on). The component receives `context.draft` for the active request and `context.response` when a response exists.
+Adds a segmented tab to the request editor (alongside Params, Headers, Body, and so on). The component receives `context.draft` for the active request, `context.response` when a response exists, and `context.variables` for merged global, collection, and environment substitution values (see [Global variables](/renderer-data#global-variables)).
 
 ```typescript
 hc.subscriptions.push(

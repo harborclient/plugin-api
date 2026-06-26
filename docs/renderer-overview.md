@@ -39,6 +39,10 @@ export interface RequestTabContext {
   draft: RequestDraft;
   response: HttpResponse | null;
   readOnly: true;
+  collectionAuth: AuthConfig;
+  collectionHeaders: Array<{ key: string; value: string; enabled: boolean }>;
+  /** Merged global, collection, and environment values for {{key}} substitution. */
+  variables: Record<string, string>;
 }
 
 export interface RequestTabContribution extends UiContributionBase {
@@ -229,6 +233,16 @@ export interface OpenRequestDraftPayload {
 export interface PluginHost {
   openRequestDraft(payload: OpenRequestDraftPayload): Promise<void>;
   loadRequest(requestId: number): Promise<void>;
+  sendRequest(): Promise<void>;
+  createEnvironmentWithVariables(
+    name: string,
+    variables: PluginVariableInput[]
+  ): Promise<CreatedEnvironmentResult>;
+  updateEnvironmentVariables(
+    environmentId: number,
+    variables: PluginVariableInput[]
+  ): Promise<void>;
+  createCollection(payload: CreateCollectionPayload): Promise<CreateCollectionResult>;
 }
 
 export interface PluginHttpRequest {
