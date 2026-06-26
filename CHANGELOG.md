@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.4.4 - 2026-06-26
+
 - Document global variables for plugins: precedence chain, `RequestTabContext.variables`, and `harborclient:updateGlobalVariables` host command.
 - Clarify `RequestTabContext.variables` JSDoc to include globals in the merge order.
 
