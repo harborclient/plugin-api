@@ -86,7 +86,9 @@ Stops the echo server owned by this plugin.
 
 **Signature:** `(handler: (request) => unknown | Promise<unknown>) => Disposable`
 
-Invoked for each incoming HTTP request. The `request` object includes a default `echo` payload (args, data, files, form, headers, json, origin, url). Return a JSON-serializable value for the response body. When the handler returns `undefined`, the host sends the default echo payload.
+Invoked for each incoming HTTP request. The `request` object includes a default `echo` payload (args, data, files, form, headers, json, origin, url). Return a JSON-serializable value for the response body.
+
+Multiple handlers may be registered; each call returns a `Disposable` that removes only that handler. Handlers run sequentially in registration order. When a handler returns `undefined` or `null`, the host keeps the result from the previous handler (starting from the default echo payload).
 
 ## hc.scripts
 

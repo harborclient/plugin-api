@@ -1621,8 +1621,11 @@ export interface PluginServer {
   /**
    * Registers a handler invoked for each incoming HTTP request.
    *
-   * Return a JSON-serializable value to send as the response body. When the handler
-   * returns `undefined`, the host sends the default httpbin-style echo payload.
+   * Multiple handlers may be registered; each call returns a {@link Disposable}
+   * that removes only that handler. Handlers run sequentially in registration
+   * order. Return a JSON-serializable value to send as the response body. When a
+   * handler returns `undefined` or `null`, the host keeps the result from the
+   * previous handler (starting from the default httpbin-style echo payload).
    *
    * @param handler - Processes incoming requests and returns the response body.
    * @returns A {@link Disposable} that unregisters the handler when disposed.
