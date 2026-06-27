@@ -47,6 +47,47 @@ Main-process hooks are invoked by posting work to the utilityProcess runner; the
 
 See the [Request logger example](/examples/request-logger) for a main-only plugin using HTTP hooks.
 
+## hc.server
+
+**Requires the `server` permission.**
+
+Runs a local HTTP echo server in the Electron main process (express). Port `0` selects the first available non-privileged port from the OS. Register `onRequest` before calling `start` so incoming traffic is routed through your handler.
+
+```typescript
+import type { MainPluginContext } from '@harborclient/sdk';
+
+export function activate(hc: MainPluginContext): void {
+  hc.subscriptions.push(
+    hc.server.onRequest(async (request) => {
+      // Return custom JSON, or undefined to use the default httpbin-style echo payload.
+      return { ...request.echo, custom: true };
+    })
+  );
+
+  void hc.server.start({ port: 0 }).then(({ port }) => {
+    console.log(`Echo server listening on http://localhost:${port}`);
+  });
+}
+```
+
+### hc.server.start(options?)
+
+**Signature:** `(options?: { port?: number }) => Promise<{ port: number }>`
+
+Starts listening. Returns the assigned port after the server accepts connections.
+
+### hc.server.stop()
+
+**Signature:** `() => Promise<void>`
+
+Stops the echo server owned by this plugin.
+
+### hc.server.onRequest(handler)
+
+**Signature:** `(handler: (request) => unknown | Promise<unknown>) => Disposable`
+
+Invoked for each incoming HTTP request. The `request` object includes a default `echo` payload (args, data, files, form, headers, json, origin, url). Return a JSON-serializable value for the response body. When the handler returns `undefined`, the host sends the default echo payload.
+
 ## hc.scripts
 
 **Signature:** `(init?: PluginScriptContextInit) => PluginScriptContext`

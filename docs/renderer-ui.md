@@ -194,11 +194,12 @@ hc.subscriptions.push(
 
 **Manifest:** `contributes.footerPanels`
 
-| Parameter   | Type                  | Description                    |
-| ----------- | --------------------- | ------------------------------ |
-| `id`        | `string`              | Panel id                       |
-| `title`     | `string`              | Toggle label in the footer bar |
-| `Component` | `React.ComponentType` | Slide-up panel content         |
+| Parameter   | Type                  | Description                                                   |
+| ----------- | --------------------- | ------------------------------------------------------------- |
+| `id`        | `string`              | Panel id                                                      |
+| `title`     | `string`              | Toggle label in the footer bar                                |
+| `Component` | `React.ComponentType` | Slide-up panel content                                        |
+| `Indicator` | `React.ComponentType` | Optional decoration beside the toggle label (e.g. active dot) |
 
 Registers a slide-up footer panel using the same pattern as Console and Variables.
 The host wraps your component in a resizable shell — you do not implement resize

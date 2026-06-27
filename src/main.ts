@@ -1,5 +1,8 @@
 export type {
   Disposable,
+  EchoServerIncomingRequest,
+  EchoServerStartResult,
+  EchoServerStatus,
   MainPluginContext,
   PluginHttp,
   PluginHttpRequest,
@@ -15,5 +18,6 @@ export type {
   PluginScriptRunResult,
   PluginScripts,
   PluginScriptTestResult,
+  PluginServer,
   PluginStorage
 } from './types';

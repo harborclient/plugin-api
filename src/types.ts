@@ -373,6 +373,12 @@ export interface FooterPanelContribution extends UiContributionBase {
    * Slide-up panel content. Use {@link PluginContext.react} — do not bundle React.
    */
   Component: React.ComponentType;
+
+  /**
+   * Optional decoration beside the footer toggle label (for example an active-state dot).
+   * Use {@link PluginContext.react} — do not bundle React.
+   */
+  Indicator?: React.ComponentType;
 }
 
 // ---------------------------------------------------------------------------
@@ -1470,6 +1476,162 @@ export interface PluginIpc {
   handle(channel: string, handler: (...args: unknown[]) => unknown): Disposable;
 }
 
+/**
+ * httpbin-style default echo payload returned when no custom handler overrides the response.
+ */
+export interface EchoResponsePayload {
+  /**
+   * Query string arguments.
+   */
+  args: Record<string, string>;
+
+  /**
+   * Raw request body as a UTF-8 string.
+   */
+  data: string;
+
+  /**
+   * Uploaded file field names mapped to original filenames.
+   */
+  files: Record<string, string>;
+
+  /**
+   * Parsed form fields excluding file uploads.
+   */
+  form: Record<string, string>;
+
+  /**
+   * Request headers as a flat key/value map.
+   */
+  headers: Record<string, string>;
+
+  /**
+   * Parsed JSON body when Content-Type is application/json.
+   */
+  json: Record<string, unknown> | null;
+
+  /**
+   * Client IP or socket remote address.
+   */
+  origin: string;
+
+  /**
+   * Full request URL including scheme, host, path, and query.
+   */
+  url: string;
+}
+
+/**
+ * Serializable incoming HTTP request snapshot passed to echo server handlers.
+ */
+export interface EchoServerIncomingRequest {
+  /**
+   * HTTP method (for example `GET`, `POST`).
+   */
+  method: string;
+
+  /**
+   * Full request URL.
+   */
+  url: string;
+
+  /**
+   * Request path without the query string.
+   */
+  path: string;
+
+  /**
+   * Parsed query arguments.
+   */
+  query: Record<string, string>;
+
+  /**
+   * Request headers as a flat key/value map.
+   */
+  headers: Record<string, string>;
+
+  /**
+   * Raw request body as a UTF-8 string.
+   */
+  body: string;
+
+  /**
+   * Inferred body encoding for hc.request seeding.
+   */
+  bodyType: BodyType;
+
+  /**
+   * Query parameter rows for hc.request seeding.
+   */
+  params: PluginScriptKeyValue[];
+
+  /**
+   * Default httpbin-style echo payload for this request.
+   */
+  echo: EchoResponsePayload;
+}
+
+/**
+ * Result returned when starting a plugin echo server.
+ */
+export interface EchoServerStartResult {
+  /**
+   * Assigned listen port after the server accepts connections.
+   */
+  port: number;
+}
+
+/**
+ * Running state for a plugin echo server.
+ */
+export interface EchoServerStatus {
+  /**
+   * Whether the server is currently listening.
+   */
+  running: boolean;
+
+  /**
+   * Assigned listen port when running.
+   */
+  port?: number;
+}
+
+/**
+ * Local HTTP echo server API available on {@link MainPluginContext.server}.
+ *
+ * Requires the `server` permission. The host runs an express listener in the Electron
+ * main process and routes each incoming request through your onRequest handler.
+ */
+export interface PluginServer {
+  /**
+   * Starts listening for HTTP requests on the given port.
+   *
+   * Port `0` selects the first available non-privileged port from the OS.
+   *
+   * @param options - Optional listen port. Defaults to `0`.
+   * @returns Assigned listen port after the server is accepting connections.
+   */
+  start(options?: { port?: number }): Promise<EchoServerStartResult>;
+
+  /**
+   * Stops the echo server owned by this plugin.
+   */
+  stop(): Promise<void>;
+
+  /**
+   * Registers a handler invoked for each incoming HTTP request.
+   *
+   * Return a JSON-serializable value to send as the response body. When the handler
+   * returns `undefined`, the host sends the default httpbin-style echo payload.
+   *
+   * @param handler - Processes incoming requests and returns the response body.
+   * @returns A {@link Disposable} that unregisters the handler when disposed.
+   */
+  onRequest(
+    handler: (request: EchoServerIncomingRequest) => unknown | Promise<unknown>
+  ): Disposable;
+}
+
 // ---------------------------------------------------------------------------
 // Main-process script sandbox (hc.scripts)
 // ---------------------------------------------------------------------------
@@ -1797,4 +1959,9 @@ export interface MainPluginContext {
    * you inject via setVariable and setFunction.
    */
   scripts: PluginScripts;
+
+  /**
+   * Local HTTP echo server. Requires the `server` permission.
+   */
+  server: PluginServer;
 }
