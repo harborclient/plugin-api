@@ -1,4 +1,6 @@
 export type {
+  CodeEditorSetup,
+  CodeEditorTheme,
   Disposable,
   EchoServerIncomingRequest,
   EchoServerStartResult,
@@ -19,5 +21,6 @@ export type {
   PluginScripts,
   PluginScriptTestResult,
   PluginServer,
-  PluginStorage
+  PluginStorage,
+  ScriptPhase
 } from './types';

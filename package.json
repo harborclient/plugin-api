@@ -27,50 +27,84 @@
   "exports": {
     ".": {
       "types": "./dist/client.d.ts",
-      "import": "./dist/runtime/index.js"
+      "import": "./dist/runtime/index.js",
+      "require": "./dist/runtime/index.js",
+      "default": "./dist/runtime/index.js"
     },
     "./jsx-runtime": {
       "types": "./dist/runtime/jsx-runtime.d.ts",
-      "import": "./dist/runtime/jsx-runtime.js"
+      "import": "./dist/runtime/jsx-runtime.js",
+      "require": "./dist/runtime/jsx-runtime.js",
+      "default": "./dist/runtime/jsx-runtime.js"
     },
     "./jsx-dev-runtime": {
       "types": "./dist/runtime/jsx-dev-runtime.d.ts",
-      "import": "./dist/runtime/jsx-dev-runtime.js"
+      "import": "./dist/runtime/jsx-dev-runtime.js",
+      "require": "./dist/runtime/jsx-dev-runtime.js",
+      "default": "./dist/runtime/jsx-dev-runtime.js"
     },
     "./react": {
       "types": "./dist/runtime/react.d.ts",
-      "import": "./dist/runtime/react.js"
+      "import": "./dist/runtime/react.js",
+      "require": "./dist/runtime/react.js",
+      "default": "./dist/runtime/react.js"
     },
     "./main": {
       "types": "./dist/main.d.ts"
     },
     "./http": {
       "types": "./dist/http/index.d.ts",
-      "import": "./dist/http/index.js"
+      "import": "./dist/http/index.js",
+      "require": "./dist/http/index.js",
+      "default": "./dist/http/index.js"
+    },
+    "./variables": {
+      "types": "./dist/variables/index.d.ts",
+      "import": "./dist/variables/index.js",
+      "require": "./dist/variables/index.js",
+      "default": "./dist/variables/index.js"
     },
     "./ui": {
       "types": "./dist/ui/index.d.ts",
-      "import": "./dist/ui/index.js"
+      "import": "./dist/ui/index.js",
+      "require": "./dist/ui/index.js",
+      "default": "./dist/ui/index.js"
+    },
+    "./ui-react": {
+      "types": "./dist/ui-react/index.d.ts",
+      "import": "./dist/ui-react/index.js",
+      "require": "./dist/ui-react/index.js",
+      "default": "./dist/ui-react/index.js"
     },
     "./storage": {
       "types": "./dist/storage/index.d.ts",
-      "import": "./dist/storage/index.js"
+      "import": "./dist/storage/index.js",
+      "require": "./dist/storage/index.js",
+      "default": "./dist/storage/index.js"
     },
     "./clipboard": {
       "types": "./dist/clipboard.d.ts",
-      "import": "./dist/clipboard.js"
+      "import": "./dist/clipboard.js",
+      "require": "./dist/clipboard.js",
+      "default": "./dist/clipboard.js"
     },
     "./runtime-utils": {
       "types": "./dist/runtime-utils.d.ts",
-      "import": "./dist/runtime-utils.js"
+      "import": "./dist/runtime-utils.js",
+      "require": "./dist/runtime-utils.js",
+      "default": "./dist/runtime-utils.js"
     },
     "./store": {
       "types": "./dist/runtime/store.d.ts",
-      "import": "./dist/runtime/store.js"
+      "import": "./dist/runtime/store.js",
+      "require": "./dist/runtime/store.js",
+      "default": "./dist/runtime/store.js"
     },
     "./signing": {
       "types": "./dist/signing/index.d.ts",
-      "import": "./dist/signing/index.js"
+      "import": "./dist/signing/index.js",
+      "require": "./dist/signing/index.js",
+      "default": "./dist/signing/index.js"
     }
   },
   "bin": {
@@ -85,6 +119,21 @@
   },
   "peerDependencies": {
     "react": ">=18"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.20.3",
+    "@codemirror/lang-javascript": "^6.2.4",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/language": "^6.12.3",
+    "@codemirror/state": "^6.6.0",
+    "@codemirror/view": "^6.43.1",
+    "@faker-js/faker": "^10.5.0",
+    "@fortawesome/fontawesome-svg-core": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.1",
+    "@lezer/highlight": "^1.2.3",
+    "@uiw/codemirror-themes-all": "^4.25.10",
+    "@uiw/react-codemirror": "^4.25.10"
   },
   "scripts": {
     "build": "tsc && node scripts/copy-runtime.mjs",

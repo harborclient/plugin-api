@@ -1,6 +1,138 @@
 import type * as React from 'react';
 
 // ---------------------------------------------------------------------------
+// Shared UI / request types
+// ---------------------------------------------------------------------------
+
+/**
+ * HTTP method supported in the request editor.
+ */
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
+
+/**
+ * A collection-scoped variable for use in request URLs via {{key}} syntax.
+ */
+export interface Variable {
+  /**
+   * Variable name referenced in {{key}} placeholders.
+   */
+  key: string;
+
+  /**
+   * Value substituted when the variable is resolved.
+   */
+  value: string;
+
+  /**
+   * Fallback value used when value is empty.
+   */
+  defaultValue: string;
+
+  /**
+   * When true, value is included in collection exports.
+   */
+  share: boolean;
+}
+
+/**
+ * Enabled key/value row for headers, query params, and similar editors.
+ */
+export interface KeyValue {
+  /**
+   * Header or query parameter name.
+   */
+  key: string;
+
+  /**
+   * Header or query parameter value.
+   */
+  value: string;
+
+  /**
+   * When false, the pair is ignored when building the request.
+   */
+  enabled: boolean;
+}
+
+/**
+ * Field type for a multipart/form-data part.
+ */
+export type FormDataPartType = 'text' | 'file';
+
+/**
+ * A single part in a multipart/form-data body.
+ */
+export interface FormDataPart {
+  /**
+   * Form field name.
+   */
+  key: string;
+
+  /**
+   * Text value when type is text; ignored for file parts.
+   */
+  value: string;
+
+  /**
+   * When false, the part is excluded when building the request.
+   */
+  enabled: boolean;
+
+  /**
+   * Whether this part is a text field or file upload.
+   */
+  type: FormDataPartType;
+
+  /**
+   * Absolute file paths for file parts; supports one or more files per field.
+   */
+  files: string[];
+}
+
+/**
+ * Script execution phase relative to the HTTP request.
+ */
+export type ScriptPhase = 'pre' | 'post';
+
+/**
+ * Named CodeMirror syntax themes available in settings.
+ */
+export type CodeEditorTheme =
+  | 'default'
+  | 'dracula'
+  | 'githubLight'
+  | 'githubDark'
+  | 'monokai'
+  | 'nord'
+  | 'solarizedLight'
+  | 'tokyoNight';
+
+/**
+ * CodeMirror basicSetup options for editable editor instances.
+ */
+export interface CodeEditorSetup {
+  /**
+   * When true, shows line numbers in the gutter.
+   */
+  lineNumbers: boolean;
+
+  /**
+   * When true, shows the code-folding gutter.
+   */
+  foldGutter: boolean;
+
+  /**
+   * When true, highlights the line containing the cursor.
+   */
+  highlightActiveLine: boolean;
+
+  /**
+   * When true, highlights the active line number in the gutter.
+   */
+  highlightActiveLineGutter: boolean;
+}
+
+// ---------------------------------------------------------------------------
 // Core lifecycle
 // ---------------------------------------------------------------------------
 

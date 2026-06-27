@@ -1,12 +1,11 @@
 import type { AuthConfig } from '../types.js';
+import { VARIABLE_TOKEN_PATTERN } from '../variables/tokens.js';
 
 type KeyValue = {
   key: string;
   value: string;
   enabled: boolean;
 };
-
-const VARIABLE_PATTERN = /\{\{\s*([\w.-]+)\s*\}\}/g;
 
 /**
  * Replaces {{key}} placeholders using a runtime variable map.
@@ -15,7 +14,8 @@ const VARIABLE_PATTERN = /\{\{\s*([\w.-]+)\s*\}\}/g;
  * @param runtimeVars - Current runtime variable values.
  */
 export function substituteVariables(text: string, runtimeVars: Record<string, string>): string {
-  return text.replace(VARIABLE_PATTERN, (match, key: string) => {
+  const pattern = new RegExp(VARIABLE_TOKEN_PATTERN.source, 'g');
+  return text.replace(pattern, (match, key: string) => {
     const value = runtimeVars[key];
     return value !== undefined ? value : match;
   });
