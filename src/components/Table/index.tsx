@@ -1,11 +1,5 @@
 import { createContext, createElement, useContext } from '@harborclient/sdk/react';
-import type {
-  HTMLAttributes,
-  JSX,
-  ReactNode,
-  TdHTMLAttributes,
-  ThHTMLAttributes
-} from 'react';
+import type { HTMLAttributes, JSX, ReactNode, TdHTMLAttributes, ThHTMLAttributes } from 'react';
 
 /**
  * Layout preset for {@link Table} and its subcomponents.
@@ -79,11 +73,7 @@ interface TableProps {
  * @param variant - Bordered collapsed layout or loose separate-cell spacing.
  * @param className - Extra classes on the wrapper (bordered) or table element (loose).
  */
-export function Table({
-  children,
-  variant = 'bordered',
-  className
-}: TableProps): JSX.Element {
+export function Table({ children, variant = 'bordered', className }: TableProps): JSX.Element {
   if (variant === 'loose') {
     const tableBase = 'w-full border-separate border-spacing-x-1.5 border-spacing-y-1.5';
     const tableClasses = className ? `${tableBase} ${className}` : tableBase;
@@ -127,11 +117,7 @@ interface TableSectionProps extends HTMLAttributes<HTMLTableSectionElement> {
  * @param children - Header row elements, typically native `tr` nodes.
  * @param className - Extra classes appended after any section preset.
  */
-export function TableHeader({
-  children,
-  className,
-  ...rest
-}: TableSectionProps): JSX.Element {
+export function TableHeader({ children, className, ...rest }: TableSectionProps): JSX.Element {
   return (
     <thead className={className} {...rest}>
       {children}

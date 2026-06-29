@@ -59,7 +59,12 @@ export const WithInputs: Story = {
             <Input type="checkbox" defaultChecked aria-label="Enable row 1" title="Enable" />
           </TableCell>
           <TableCell>
-            <Input type="text" className="w-full" defaultValue="Authorization" aria-label="Key, row 1" />
+            <Input
+              type="text"
+              className="w-full"
+              defaultValue="Authorization"
+              aria-label="Key, row 1"
+            />
           </TableCell>
           <TableCell>
             <Input
