@@ -23,12 +23,7 @@ export function Checkbox({ ref, className, ...props }: Props): JSX.Element {
     <span className={wrapperClasses}>
       <input ref={ref} type="checkbox" className={checkboxInput} {...props} />
       <span className={checkboxBox} aria-hidden>
-        <svg
-          className="h-3 w-3"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M2.5 6L5 8.5L9.5 3.5"
             stroke="currentColor"
