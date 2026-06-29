@@ -5,7 +5,9 @@ import type { FormDataPart, FormDataPartType, Variable } from '../../types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { Input, Select, fieldFrame } from '../forms/index.js';
+import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
 import { VariableInput } from '../VariableInput/index.js';
+import { emptyFormPart, fileBasename, withTrailingRow } from './utils.js';
 
 export interface Props {
   /**
@@ -34,41 +36,6 @@ export interface Props {
    * Opens collection settings to edit a hovered variable.
    */
   onEditVariable?: () => void;
-}
-
-const thClass =
-  'border-r border-b border-separator px-1.5 py-1 text-left text-[14px] font-medium uppercase tracking-wide text-muted last:border-r-0';
-const tdClass = 'border-r border-b border-separator p-1.5 align-top last:border-r-0';
-
-/**
- * Returns a blank multipart form part with enabled set to true.
- */
-function emptyFormPart(): FormDataPart {
-  return { key: '', value: '', enabled: true, type: 'text', files: [] };
-}
-
-/**
- * Returns the file name portion of an absolute path.
- *
- * @param filePath - Absolute file path.
- */
-function fileBasename(filePath: string): string {
-  const normalized = filePath.replace(/\\/g, '/');
-  const lastSlash = normalized.lastIndexOf('/');
-  return lastSlash >= 0 ? normalized.slice(lastSlash + 1) : normalized;
-}
-
-/**
- * Ensures at least one row exists and appends a trailing blank row when needed.
- *
- * @param parts - Current form parts.
- * @returns Rows safe to render in the editor.
- */
-function withTrailingRow(parts: FormDataPart[]): FormDataPart[] {
-  if (parts.length === 0) {
-    return [emptyFormPart()];
-  }
-  return parts;
 }
 
 /**
@@ -147,129 +114,121 @@ export function FormDataEditor({
   };
 
   return (
-    <div className="overflow-hidden rounded-md border border-separator">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr>
-            <th scope="col" className={`${thClass} w-6 p-0`}>
-              <span className="sr-only">Enable</span>
-            </th>
-            <th scope="col" className={thClass}>
-              Key
-            </th>
-            <th scope="col" className={`${thClass} w-24`}>
-              Type
-            </th>
-            <th scope="col" className={thClass}>
-              Value
-            </th>
-            <th className={`${thClass} w-7 p-0`} />
-          </tr>
-        </thead>
-        <tbody className="[&_tr:last-child_td]:border-b-0">
-          {rows.map((row, index) => (
-            <tr key={index}>
-              <td className={`${tdClass} w-6 p-1 text-center`}>
-                <Input
-                  type="checkbox"
+    <Table>
+      <TableHeader>
+        <tr>
+          <TableHead className="w-6 p-0">
+            <span className="sr-only">Enable</span>
+          </TableHead>
+          <TableHead>Key</TableHead>
+          <TableHead className="w-24">Type</TableHead>
+          <TableHead>Value</TableHead>
+          <TableHead className="w-7 p-0" />
+        </tr>
+      </TableHeader>
+      <TableBody>
+        {rows.map((row, index) => (
+          <tr key={index}>
+            <TableCell className="w-6 p-1 text-center">
+              <Input
+                type="checkbox"
+                className="app-no-drag"
+                checked={row.enabled}
+                onChange={(e) => updateRow(index, { enabled: e.target.checked })}
+                aria-label={`Enable row ${index + 1}`}
+                title="Enable"
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                type="text"
+                className="w-full"
+                value={row.key}
+                placeholder="field"
+                aria-label={`Key, row ${index + 1}`}
+                onChange={(e) => updateRow(index, { key: e.target.value })}
+              />
+            </TableCell>
+            <TableCell>
+              <Select
+                className="w-full"
+                value={row.type}
+                aria-label={`Type, row ${index + 1}`}
+                onChange={(e) => {
+                  const type = e.target.value as FormDataPartType;
+                  updateRow(index, {
+                    type,
+                    value: type === 'text' ? row.value : '',
+                    files: type === 'file' ? row.files : []
+                  });
+                }}
+              >
+                <option value="text">Text</option>
+                <option value="file">File</option>
+              </Select>
+            </TableCell>
+            <TableCell>
+              {row.type === 'text' ? (
+                <VariableInput
+                  wrapperClassName={`${fieldFrame} w-full`}
                   className="app-no-drag"
-                  checked={row.enabled}
-                  onChange={(e) => updateRow(index, { enabled: e.target.checked })}
-                  aria-label={`Enable row ${index + 1}`}
-                  title="Enable"
+                  value={row.value}
+                  onChange={(value) => updateRow(index, { value })}
+                  variables={variables}
+                  placeholder="value"
+                  aria-label={`Value, row ${index + 1}`}
+                  onEditVariable={onEditVariable}
                 />
-              </td>
-              <td className={tdClass}>
-                <Input
-                  type="text"
-                  className="w-full"
-                  value={row.key}
-                  placeholder="field"
-                  aria-label={`Key, row ${index + 1}`}
-                  onChange={(e) => updateRow(index, { key: e.target.value })}
-                />
-              </td>
-              <td className={tdClass}>
-                <Select
-                  className="w-full"
-                  value={row.type}
-                  aria-label={`Type, row ${index + 1}`}
-                  onChange={(e) => {
-                    const type = e.target.value as FormDataPartType;
-                    updateRow(index, {
-                      type,
-                      value: type === 'text' ? row.value : '',
-                      files: type === 'file' ? row.files : []
-                    });
-                  }}
-                >
-                  <option value="text">Text</option>
-                  <option value="file">File</option>
-                </Select>
-              </td>
-              <td className={tdClass}>
-                {row.type === 'text' ? (
-                  <VariableInput
-                    wrapperClassName={`${fieldFrame} w-full`}
-                    className="app-no-drag"
-                    value={row.value}
-                    onChange={(value) => updateRow(index, { value })}
-                    variables={variables}
-                    placeholder="value"
-                    aria-label={`Value, row ${index + 1}`}
-                    onEditVariable={onEditVariable}
-                  />
-                ) : (
-                  <div className="flex flex-col gap-1.5">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      className="self-start px-2 py-0.5 text-[14px]"
-                      onClick={() => void chooseFiles(index)}
-                    >
-                      Choose files
-                    </Button>
-                    {row.files.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {row.files.map((filePath) => (
-                          <span
-                            key={filePath}
-                            className="inline-flex max-w-full items-center gap-1 rounded-md border border-separator bg-control px-1.5 py-0.5 text-[14px] text-text"
-                            title={filePath}
-                            aria-label={filePath}
+              ) : (
+                <div className="flex flex-col gap-1.5">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="self-start px-2 py-0.5 text-[14px]"
+                    onClick={() => void chooseFiles(index)}
+                  >
+                    Choose files
+                  </Button>
+                  {row.files.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {row.files.map((filePath) => (
+                        <span
+                          key={filePath}
+                          className="inline-flex max-w-full items-center gap-1 rounded-md border border-separator bg-control px-1.5 py-0.5 text-[14px] text-text"
+                          title={filePath}
+                          aria-label={filePath}
+                        >
+                          <span className="truncate">{fileBasename(filePath)}</span>
+                          <button
+                            type="button"
+                            className="inline-flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent text-muted hover:bg-selection hover:text-text app-no-drag"
+                            onClick={() => removeFile(index, filePath)}
+                            title={`Remove file ${fileBasename(filePath)}`}
+                            aria-label={`Remove file ${fileBasename(filePath)}`}
                           >
-                            <span className="truncate">{fileBasename(filePath)}</span>
-                            <button
-                              type="button"
-                              className="inline-flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent text-muted hover:bg-selection hover:text-text app-no-drag"
-                              onClick={() => removeFile(index, filePath)}
-                              title={`Remove file ${fileBasename(filePath)}`}
-                              aria-label={`Remove file ${fileBasename(filePath)}`}
-                            >
-                              <FaIcon icon={faXmark} className="h-3 w-3" />
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </td>
-              <td className={`${tdClass} w-7 p-1 text-center`}>
-                <Button
-                  type="button"
-                  variant="iconDanger"
-                  onClick={() => removeRow(index)}
-                  title="Remove"
-                  aria-label={`Remove row ${index + 1}`}
-                >
-                  <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                            <FaIcon icon={faXmark} className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </TableCell>
+            <TableCell className="w-7 p-1 text-center">
+              <Button
+                type="button"
+                variant="iconDanger"
+                onClick={() => removeRow(index)}
+                title="Remove"
+                aria-label={`Remove row ${index + 1}`}
+              >
+                <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
+              </Button>
+            </TableCell>
+          </tr>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

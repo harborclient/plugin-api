@@ -4,6 +4,7 @@ import type { KeyValue, Variable } from '../../types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { Input, fieldFrame } from '../forms/index.js';
+import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
 import { VariableInput } from '../VariableInput/index.js';
 
 export interface Props {
@@ -39,10 +40,6 @@ export interface Props {
    */
   onEditVariable?: () => void;
 }
-
-const thClass =
-  'border-r border-b border-separator p-3 text-left text-[14px] font-medium uppercase tracking-wide text-muted last:border-r-0';
-const tdClass = 'border-r border-b border-separator p-3 last:border-r-0';
 
 /**
  * Editable table of key-value rows with enable toggles for headers and params.
@@ -84,72 +81,66 @@ export function KeyValueEditor({
   };
 
   return (
-    <div className="overflow-hidden rounded-md border border-separator">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr>
-            <th scope="col" className={`${thClass} w-6 p-0`}>
-              <span className="sr-only">Enable</span>
-            </th>
-            <th scope="col" className={thClass}>
-              Key
-            </th>
-            <th scope="col" className={thClass}>
-              Value
-            </th>
-            <th scope="col" className={`${thClass} w-7 p-0`} />
+    <Table>
+      <TableHeader>
+        <tr>
+          <TableHead className="w-6 p-0">
+            <span className="sr-only">Enable</span>
+          </TableHead>
+          <TableHead>Key</TableHead>
+          <TableHead>Value</TableHead>
+          <TableHead className="w-7 p-0" />
+        </tr>
+      </TableHeader>
+      <TableBody>
+        {rows.map((row, index) => (
+          <tr key={index}>
+            <TableCell className="w-6 p-1 text-center">
+              <Input
+                type="checkbox"
+                className="app-no-drag"
+                checked={row.enabled}
+                onChange={(e) => updateRow(index, { enabled: e.target.checked })}
+                aria-label={`Enable row ${index + 1}`}
+                title="Enable"
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                type="text"
+                className="w-full"
+                value={row.key}
+                placeholder={placeholderKey}
+                aria-label={`Key, row ${index + 1}`}
+                onChange={(e) => updateRow(index, { key: e.target.value })}
+              />
+            </TableCell>
+            <TableCell>
+              <VariableInput
+                wrapperClassName={`${fieldFrame} w-full`}
+                className="app-no-drag"
+                value={row.value}
+                onChange={(value) => updateRow(index, { value })}
+                variables={variables}
+                placeholder={placeholderValue}
+                aria-label={`Value, row ${index + 1}`}
+                onEditVariable={onEditVariable}
+              />
+            </TableCell>
+            <TableCell className="w-7 p-1 text-center">
+              <Button
+                type="button"
+                variant="iconDanger"
+                onClick={() => removeRow(index)}
+                title="Remove"
+                aria-label={`Remove row ${index + 1}`}
+              >
+                <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
+              </Button>
+            </TableCell>
           </tr>
-        </thead>
-        <tbody className="[&_tr:last-child_td]:border-b-0">
-          {rows.map((row, index) => (
-            <tr key={index}>
-              <td className={`${tdClass} w-6 p-1 text-center`}>
-                <Input
-                  type="checkbox"
-                  className="app-no-drag"
-                  checked={row.enabled}
-                  onChange={(e) => updateRow(index, { enabled: e.target.checked })}
-                  aria-label={`Enable row ${index + 1}`}
-                  title="Enable"
-                />
-              </td>
-              <td className={tdClass}>
-                <Input
-                  type="text"
-                  className="w-full"
-                  value={row.key}
-                  placeholder={placeholderKey}
-                  aria-label={`Key, row ${index + 1}`}
-                  onChange={(e) => updateRow(index, { key: e.target.value })}
-                />
-              </td>
-              <td className={tdClass}>
-                <VariableInput
-                  wrapperClassName={`${fieldFrame} w-full`}
-                  className="app-no-drag"
-                  value={row.value}
-                  onChange={(value) => updateRow(index, { value })}
-                  variables={variables}
-                  placeholder={placeholderValue}
-                  aria-label={`Value, row ${index + 1}`}
-                  onEditVariable={onEditVariable}
-                />
-              </td>
-              <td className={`${tdClass} w-7 p-1 text-center`}>
-                <Button
-                  type="button"
-                  variant="iconDanger"
-                  onClick={() => removeRow(index)}
-                  title="Remove"
-                  aria-label={`Remove row ${index + 1}`}
-                >
-                  <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

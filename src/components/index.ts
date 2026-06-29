@@ -63,6 +63,18 @@ export type { TabItem } from './SegmentedTabs/index.js';
 export { Spinner } from './Spinner/index.js';
 export { StatusMessage } from './StatusMessage/index.js';
 export { TabCloseButton } from './TabCloseButton/index.js';
+export {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  tableCellClass,
+  tableCellClassLoose,
+  tableHeadClass,
+  tableHeadClassLoose
+} from './Table/index.js';
+export type { TableVariant } from './Table/index.js';
 export { VariableInput } from './VariableInput/index.js';
 export type { Props as VariableInputProps } from './VariableInput/index.js';
 export { VariableTable } from './VariableTable/index.js';

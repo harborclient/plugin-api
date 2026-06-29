@@ -4,13 +4,12 @@ import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Input } from '../forms/index.js';
+import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
 
 /**
  * Returns a blank variable row for new table entries.
  */
 const emptyVariable = (): Variable => ({ key: '', value: '', defaultValue: '', share: false });
-
-const thClass = 'pb-1 text-left text-[14px] font-medium uppercase tracking-wide text-muted';
 
 interface Props {
   /**
@@ -68,20 +67,20 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
       {description && <p className="mb-3 text-[14px] text-muted">{description}</p>}
 
       <div className="flex flex-col gap-1.5">
-        <table className="w-full border-separate border-spacing-x-1.5 border-spacing-y-1.5">
-          <thead>
+        <Table variant="loose">
+          <TableHeader>
             <tr>
-              <th className={thClass}>Key</th>
-              <th className={thClass}>Value</th>
-              <th className={thClass}>Default</th>
-              <th className={`${thClass} w-14 text-center`}>Share</th>
-              <th className={`${thClass} w-7 p-0 text-center`} />
+              <TableHead>Key</TableHead>
+              <TableHead>Value</TableHead>
+              <TableHead>Default</TableHead>
+              <TableHead className="w-14 text-center">Share</TableHead>
+              <TableHead className="w-7 p-0 text-center" />
             </tr>
-          </thead>
-          <tbody>
+          </TableHeader>
+          <TableBody>
             {variables.map((variable, index) => (
               <tr key={index}>
-                <td>
+                <TableCell>
                   <Input
                     type="text"
                     className="w-full"
@@ -90,8 +89,8 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
                     aria-label={`Key, row ${index + 1}`}
                     onChange={(e) => updateVariable(index, { key: e.target.value })}
                   />
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Input
                     type="text"
                     className="w-full"
@@ -100,8 +99,8 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
                     aria-label={`Value, row ${index + 1}`}
                     onChange={(e) => updateVariable(index, { value: e.target.value })}
                   />
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Input
                     type="text"
                     className="w-full"
@@ -110,8 +109,8 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
                     aria-label={`Default, row ${index + 1}`}
                     onChange={(e) => updateVariable(index, { defaultValue: e.target.value })}
                   />
-                </td>
-                <td className="w-14 text-center">
+                </TableCell>
+                <TableCell className="w-14 text-center">
                   <Input
                     type="checkbox"
                     checked={variable.share}
@@ -119,8 +118,8 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
                     aria-label={`Include value in export, row ${index + 1}`}
                     title="Include value in export"
                   />
-                </td>
-                <td className="w-7 p-0 text-center">
+                </TableCell>
+                <TableCell className="w-7 p-0 text-center">
                   <Button
                     type="button"
                     variant="iconDanger"
@@ -130,11 +129,11 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
                   >
                     <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
                   </Button>
-                </td>
+                </TableCell>
               </tr>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
         <Button
           type="button"
           variant="toolbar"
