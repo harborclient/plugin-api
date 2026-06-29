@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Input } from '../forms/index.js';
+import { Checkbox, Input } from '../forms/index.js';
 import { Table, TableBody, TableCell, TableHead, TableHeader } from './index.js';
 
 const meta = {
@@ -56,7 +56,7 @@ export const WithInputs: Story = {
       <TableBody>
         <tr>
           <TableCell className="w-6 p-1 text-center">
-            <Input type="checkbox" defaultChecked aria-label="Enable row 1" title="Enable" />
+            <Checkbox defaultChecked aria-label="Enable row 1" title="Enable" />
           </TableCell>
           <TableCell>
             <Input
@@ -77,7 +77,7 @@ export const WithInputs: Story = {
         </tr>
         <tr>
           <TableCell className="w-6 p-1 text-center">
-            <Input type="checkbox" defaultChecked aria-label="Enable row 2" title="Enable" />
+            <Checkbox defaultChecked aria-label="Enable row 2" title="Enable" />
           </TableCell>
           <TableCell>
             <Input type="text" className="w-full" defaultValue="Accept" aria-label="Key, row 2" />

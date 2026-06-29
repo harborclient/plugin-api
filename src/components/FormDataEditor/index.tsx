@@ -4,7 +4,7 @@ import type { JSX } from 'react';
 import type { FormDataPart, FormDataPartType, Variable } from '../../types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
-import { Input, Select, fieldFrame } from '../forms/index.js';
+import { Checkbox, Input, Select, fieldFrame } from '../forms/index.js';
 import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
 import { VariableInput } from '../VariableInput/index.js';
 import { emptyFormPart, fileBasename, withTrailingRow } from './utils.js';
@@ -130,8 +130,7 @@ export function FormDataEditor({
         {rows.map((row, index) => (
           <tr key={index}>
             <TableCell className="w-6 p-1 text-center">
-              <Input
-                type="checkbox"
+              <Checkbox
                 className="app-no-drag"
                 checked={row.enabled}
                 onChange={(e) => updateRow(index, { enabled: e.target.checked })}

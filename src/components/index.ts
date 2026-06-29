@@ -23,6 +23,7 @@ export { FooterIcon } from './FooterIcon/index.js';
 export { FormGroup } from './FormGroup/index.js';
 export {
   Input,
+  Checkbox,
   Select,
   Textarea,
   field,

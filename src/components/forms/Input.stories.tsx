@@ -12,7 +12,7 @@ const meta = {
     },
     type: {
       control: 'select',
-      options: ['text', 'password', 'email', 'checkbox', 'radio']
+      options: ['text', 'password', 'email', 'radio']
     },
     disabled: { control: 'boolean' }
   }
@@ -41,13 +41,5 @@ export const Disabled: Story = {
     defaultValue: 'Read-only value',
     disabled: true,
     'aria-label': 'Read-only field'
-  }
-};
-
-export const Checkbox: Story = {
-  args: {
-    type: 'checkbox',
-    defaultChecked: true,
-    'aria-label': 'Enable feature'
   }
 };

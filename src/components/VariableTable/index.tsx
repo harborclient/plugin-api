@@ -3,7 +3,7 @@ import type { Variable } from '../../types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { Input } from '../forms/index.js';
+import { Checkbox, Input } from '../forms/index.js';
 import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
 
 /**
@@ -111,8 +111,7 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
                   />
                 </TableCell>
                 <TableCell className="w-14 text-center">
-                  <Input
-                    type="checkbox"
+                  <Checkbox
                     checked={variable.share}
                     onChange={(e) => updateVariable(index, { share: e.target.checked })}
                     aria-label={`Include value in export, row ${index + 1}`}

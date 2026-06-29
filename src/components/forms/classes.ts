@@ -20,6 +20,13 @@ export const field =
 export const surfaceField =
   'w-full rounded-md border border-separator bg-field px-3 py-2 text-[14px] text-text';
 
+/** Visually hidden native checkbox input used with {@link checkboxBox}. */
+export const checkboxInput = 'peer sr-only';
+
+/** Custom checkbox box styled via `peer-checked` / `peer-focus-visible` on {@link checkboxInput}. */
+export const checkboxBox =
+  'flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded border border-separator bg-field text-white peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent peer-disabled:cursor-not-allowed peer-disabled:opacity-50 [&>svg]:opacity-0 peer-checked:[&>svg]:opacity-100';
+
 const VARIANT_CLASSES: Record<Exclude<FieldVariant, 'plain'>, string> = {
   control: field,
   surface: surfaceField

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Checkbox as CheckboxControl } from '../forms/Checkbox.js';
 import { Input } from '../forms/Input.js';
 import { FormGroup } from './index.js';
 
@@ -43,7 +44,7 @@ export const Checkbox: Story = {
   args: {
     label: 'Enable debug logging',
     layout: 'checkbox',
-    children: <Input type="checkbox" />
+    children: <CheckboxControl />
   },
   parameters: {
     docs: {
