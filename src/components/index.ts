@@ -24,6 +24,7 @@ export { FormGroup } from './FormGroup/index.js';
 export {
   Input,
   Checkbox,
+  Radio,
   Select,
   Textarea,
   field,

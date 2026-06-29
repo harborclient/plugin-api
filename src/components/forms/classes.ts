@@ -27,6 +27,13 @@ export const checkboxInput = 'peer sr-only';
 export const checkboxBox =
   'flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded border border-separator bg-field text-white peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent peer-disabled:cursor-not-allowed peer-disabled:opacity-50 [&>svg]:opacity-0 peer-checked:[&>svg]:opacity-100';
 
+/** Visually hidden native radio input used with {@link radioCircle}. */
+export const radioInput = 'peer sr-only';
+
+/** Custom radio circle styled via `peer-checked` / `peer-focus-visible` on {@link radioInput}. */
+export const radioCircle =
+  'flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border border-separator bg-field peer-checked:border-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent peer-disabled:cursor-not-allowed peer-disabled:opacity-50 [&>span]:opacity-0 peer-checked:[&>span]:opacity-100';
+
 const VARIANT_CLASSES: Record<Exclude<FieldVariant, 'plain'>, string> = {
   control: field,
   surface: surfaceField

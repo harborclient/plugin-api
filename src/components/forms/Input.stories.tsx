@@ -12,7 +12,7 @@ const meta = {
     },
     type: {
       control: 'select',
-      options: ['text', 'password', 'email', 'radio']
+      options: ['text', 'password', 'email']
     },
     disabled: { control: 'boolean' }
   }

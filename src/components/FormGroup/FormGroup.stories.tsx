@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Checkbox as CheckboxControl } from '../forms/Checkbox.js';
+import { Radio as RadioControl } from '../forms/Radio.js';
 import { Input } from '../forms/Input.js';
 import { FormGroup } from './index.js';
 
@@ -46,6 +47,30 @@ export const Checkbox: Story = {
     layout: 'checkbox',
     children: <CheckboxControl />
   },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Label association is automatic — no `htmlFor` or `id` required on the control.'
+      }
+    }
+  }
+};
+
+export const Radio: Story = {
+  render: () => (
+    <fieldset className="flex flex-col gap-2 border-none p-0">
+      <legend className="mb-2 text-[14px] font-medium text-text">Content type</legend>
+      <FormGroup label="JSON" layout="radio">
+        <RadioControl name="content-type" value="json" defaultChecked />
+      </FormGroup>
+      <FormGroup label="Plain text" layout="radio">
+        <RadioControl name="content-type" value="text" />
+      </FormGroup>
+      <FormGroup label="Form data" layout="radio">
+        <RadioControl name="content-type" value="form" />
+      </FormGroup>
+    </fieldset>
+  ),
   parameters: {
     docs: {
       description: {
