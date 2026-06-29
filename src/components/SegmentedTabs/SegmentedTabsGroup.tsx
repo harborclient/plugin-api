@@ -1,9 +1,6 @@
 import { createElement, useId, useMemo } from '@harborclient/sdk/react';
 import type { JSX, ReactNode } from 'react';
-import {
-  SegmentedTabsContext,
-  type SegmentedTabsContextValue
-} from './SegmentedTabsContext.js';
+import { SegmentedTabsContext, type SegmentedTabsContextValue } from './SegmentedTabsContext.js';
 
 interface Props<T extends string> {
   /**
