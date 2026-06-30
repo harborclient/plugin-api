@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.1 - 2026-06-30
+
 - `createStorageStore` now hydrates from storage on creation.
 
 ## 0.6.17 - 2026-06-30
