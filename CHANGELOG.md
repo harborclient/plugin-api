@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Add `registerTheme(hc, theme)` and `defineTheme(theme)` helpers for theme plugins — `registerTheme` registers a theme and pushes its disposable onto `hc.subscriptions`.
+- Add `requestKey` to `RequestTabContext` and `ResponseTabContext` — stable per-request identifier for namespacing persistent plugin state (`req:<id>` for saved requests, `METHOD url` fallback for unsaved tabs).
+
 ## 0.6.11 - 2026-06-29
 
 - Fix Checkbox and Radio click target alignment: pass pointer events through the decorative box/circle and pin the wrapper to 18px so the overlay input matches the visible control.

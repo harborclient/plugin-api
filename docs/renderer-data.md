@@ -6,7 +6,26 @@ Custom appearance themes extend the built-in **Light**, **Dark**, **System**, an
 
 HarborClient styles the app with `--mac-*` CSS custom properties defined in `src/renderer/src/styles.css`. When a plugin theme is active, the host sets `data-theme="plugin-<pluginId>-<themeId>"` on `<html>` and applies your token overrides or injected stylesheet. Built-in light/dark/system behavior is unchanged when a builtin theme is selected.
 
-Requires the `ui` permission. Push returned disposables onto `hc.subscriptions`.
+Requires the `ui` permission. Push returned disposables onto `hc.subscriptions`, or use the convenience helper `registerTheme(hc, theme)` from `@harborclient/sdk` which registers the theme and pushes the disposable for you.
+
+### registerTheme(hc, theme)
+
+**Signature:** `(hc: PluginContext, theme: ThemeContribution) => Disposable`
+
+Convenience wrapper around `hc.themes.register` that also pushes the returned disposable onto `hc.subscriptions`. Prefer this for single-theme plugins.
+
+```typescript
+import { registerTheme } from '@harborclient/sdk';
+
+registerTheme(hc, {
+  id: 'solarized',
+  title: 'Solarized Dark',
+  type: 'dark',
+  colors: { surface: '#002b36' }
+});
+```
+
+Use `defineTheme(theme)` when you want to define the theme object in a separate module with full `ThemeContribution` typing.
 
 ### hc.themes.register(theme)
 
@@ -143,6 +162,46 @@ Persists a JSON-serializable value.
 ```typescript
 await hc.storage.set('enabled', true);
 ```
+
+### Storage-backed store (cross-webview sync)
+
+Separate plugin webviews do not share memory. When one surface writes
+`hc.storage` and another needs to react (for example a sidebar and a modal
+overlay), reload from storage on focus/visibility instead of duplicating
+read/diff/notify logic in every plugin.
+
+`@harborclient/sdk/store` provides:
+
+- **`createStorageStore<T>({ storage, key, parse, equals?, keepCurrentWhenMissing? })`**
+  — returns `{ subscribe, getSnapshot, useValue, reloadFromStorage, set }`.
+  `parse` validates raw storage into a typed snapshot; `set` updates memory and
+  persists (write-through). Default equality uses `JSON.stringify`; pass a custom
+  `equals` for cheaper comparisons. Set `keepCurrentWhenMissing: true` when an
+  absent storage key should not reset in-memory state.
+- **`syncOnWindowFocus(stores, { intervalMs? })`** — wires `focus`,
+  `visibilitychange`, and optional polling to `reloadFromStorage` on one or more
+  stores. Returns a `Disposable` for `hc.subscriptions` or React effect cleanup.
+
+```typescript
+import { createStorageStore, syncOnWindowFocus } from '@harborclient/sdk/store';
+
+const schemasStore = createStorageStore({
+  storage: hc.storage,
+  key: 'schemas',
+  parse: (raw) => (Array.isArray(raw) ? raw : [])
+});
+
+await schemasStore.reloadFromStorage();
+
+hc.subscriptions.push(syncOnWindowFocus(schemasStore));
+
+// In a component:
+const schemas = schemasStore.useValue();
+await schemasStore.set([...schemas, newEntry]);
+```
+
+Use **`createExternalStore`** from the same module for in-webview-only state
+that does not need persistence.
 
 ## hc.database
 

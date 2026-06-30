@@ -41,3 +41,26 @@ export function createPluginComponent(factory) {
 
   return PluginComponent;
 }
+
+/**
+ * Registers a custom appearance theme and tracks its disposable for cleanup.
+ *
+ * @param {import('../types').PluginContext} hc - Renderer plugin context.
+ * @param {import('../types').ThemeContribution} theme - Theme definition; `theme.id` must match `contributes.themes`.
+ * @returns {import('../types').Disposable} Disposable that unregisters the theme.
+ */
+export function registerTheme(hc, theme) {
+  const disposable = hc.themes.register(theme);
+  hc.subscriptions.push(disposable);
+  return disposable;
+}
+
+/**
+ * Identity helper that applies `ThemeContribution` typing to a theme literal.
+ *
+ * @param {import('../types').ThemeContribution} theme - Theme definition.
+ * @returns {import('../types').ThemeContribution} The same theme, typed.
+ */
+export function defineTheme(theme) {
+  return theme;
+}

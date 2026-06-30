@@ -1,4 +1,5 @@
 import type * as React from 'react';
+import type { Disposable, PluginContext, ThemeContribution } from '../types';
 
 /**
  * Installs the HarborClient renderer React instance for plugin JSX and hooks.
@@ -18,3 +19,20 @@ export function installReact(react: typeof React): void;
 export function createPluginComponent<P extends Record<string, unknown>>(
   factory: (react: typeof React) => React.ComponentType<P>
 ): React.ComponentType<P>;
+
+/**
+ * Registers a custom appearance theme and tracks its disposable for cleanup.
+ *
+ * @param hc - Renderer plugin context.
+ * @param theme - Theme definition; `theme.id` must match `contributes.themes`.
+ * @returns Disposable that unregisters the theme.
+ */
+export function registerTheme(hc: PluginContext, theme: ThemeContribution): Disposable;
+
+/**
+ * Identity helper that applies `ThemeContribution` typing to a theme literal.
+ *
+ * @param theme - Theme definition.
+ * @returns The same theme, typed.
+ */
+export function defineTheme(theme: ThemeContribution): ThemeContribution;
