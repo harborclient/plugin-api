@@ -7,6 +7,7 @@ import {
   registerContributionHeaderActions,
   registerContributionIndicator
 } from './contributionRegistry.js';
+import { createPluginDatabaseApi } from './pluginDatabaseApi.js';
 import { setHostReact } from './reactHost.js';
 
 /** @type {Map<string, Set<(...args: unknown[]) => void | Promise<void>>>} */
@@ -197,7 +198,7 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
         await bridgeInvoke('storage.set', { key, value });
       }
     },
-    database: {
+    database: createPluginDatabaseApi({
       query: (mode, sql, params, txnId) => {
         assertPermission('database');
         return bridgeInvoke('database.query', { mode, sql, params, txnId });
@@ -214,7 +215,7 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
         assertPermission('database');
         return bridgeInvoke('database.endTransaction', { txnId, action });
       }
-    },
+    }),
     fs: {
       pickFile: async (options) => {
         assertPermission('filesystem:pick');
@@ -691,13 +692,22 @@ export function mountContributionView({
     'mainViews'
   ]);
 
-  if (FILL_SURFACE_KINDS.has(kind)) {
+  if (FILL_SURFACE_KINDS.has(kind) && slot === 'content') {
     document.body.classList.add('plugin-surface-fill');
   }
 
   if (slot === 'headerActions') {
     document.body.classList.add('plugin-surface-header-actions');
     document.documentElement.classList.add('plugin-surface-header-actions');
+    root.style.display = 'inline-flex';
+    root.style.width = 'fit-content';
+    root.style.maxWidth = '100%';
+    root.style.overflow = 'hidden';
+  }
+
+  if (slot === 'indicator') {
+    document.body.classList.add('plugin-surface-indicator');
+    document.documentElement.classList.add('plugin-surface-indicator');
     root.style.display = 'inline-flex';
     root.style.width = 'fit-content';
     root.style.maxWidth = '100%';
@@ -818,6 +828,60 @@ export function mountContributionView({
 
     render();
     reportHeaderActionsSize();
+
+    return () => {
+      resizeObserver?.disconnect();
+      if (resizeFrame != null) {
+        cancelAnimationFrame(resizeFrame);
+      }
+    };
+  }
+
+  if (slot === 'indicator') {
+    /**
+     * Reports footer panel indicator size so the host webview stays compact inline.
+     */
+    const reportIndicatorSize = () => {
+      const measureTarget = root.firstElementChild ?? root;
+      const width = Math.ceil(
+        Math.max(
+          measureTarget.scrollWidth,
+          measureTarget.getBoundingClientRect().width,
+          measureTarget.offsetWidth
+        )
+      );
+      const height = Math.ceil(
+        Math.max(
+          measureTarget.scrollHeight,
+          measureTarget.getBoundingClientRect().height,
+          measureTarget.offsetHeight
+        )
+      );
+      if (width <= 0 && height <= 0) {
+        return;
+      }
+      if (resizeFrame != null) {
+        cancelAnimationFrame(resizeFrame);
+      }
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = requestAnimationFrame(() => {
+          resizeFrame = null;
+          void bridgeInvoke('view.reportSize', {
+            ...(width > 0 ? { width } : {}),
+            ...(height > 0 ? { height } : {}),
+            slot: 'indicator'
+          });
+        });
+      });
+    };
+
+    resizeObserver = new ResizeObserver(() => {
+      reportIndicatorSize();
+    });
+    resizeObserver.observe(root);
+
+    render();
+    reportIndicatorSize();
 
     return () => {
       resizeObserver?.disconnect();
