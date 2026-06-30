@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.6.17 - 2026-06-30
+
 - Add `@harborclient/sdk/react-dom` with host-delegated `createPortal` for plugin portals.
 - Add `portalToBody` helper in `@harborclient/sdk/components` for modals that must escape overflow-hidden plugin webview containers.
 
