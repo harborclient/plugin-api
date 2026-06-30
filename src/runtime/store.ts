@@ -49,7 +49,8 @@ export interface StorageStore<T> {
   reloadFromStorage(): Promise<void>;
 
   /**
-   * Updates the in-memory snapshot, notifies subscribers, and persists to storage.
+   * Persists to storage, then updates the in-memory snapshot and notifies subscribers.
+   * Rejects when persistence fails; the snapshot is left unchanged.
    *
    * @param next - New snapshot value.
    */
@@ -137,6 +138,10 @@ function defaultEquals<T>(a: T, b: T): boolean {
 /**
  * Creates a storage-backed external store for sharing state across plugin webviews.
  *
+ * Hydrates from storage asynchronously on creation. Synchronous {@link StorageStore.getSnapshot}
+ * may return `parse(undefined)` until hydration completes; use {@link StorageStore.useValue}
+ * or await {@link StorageStore.reloadFromStorage} when you need the persisted value before reading.
+ *
  * Separate plugin webviews do not share memory; use {@link syncOnWindowFocus} to
  * reload when another surface writes storage.
  *
@@ -162,7 +167,8 @@ export function createStorageStore<T>(options: CreateStorageStoreOptions<T>): St
   }
 
   /**
-   * Updates the snapshot, notifies subscribers, and persists when the value changed.
+   * Persists when the value changed, then updates the snapshot and notifies subscribers.
+   * Rejects when persistence fails; the snapshot is left unchanged.
    *
    * @param next - New snapshot value.
    */
@@ -171,8 +177,8 @@ export function createStorageStore<T>(options: CreateStorageStoreOptions<T>): St
     if (equals(current, next)) {
       return;
     }
-    external.setState(next);
     await storage.set(key, next);
+    external.setState(next);
   }
 
   /**
@@ -181,6 +187,8 @@ export function createStorageStore<T>(options: CreateStorageStoreOptions<T>): St
   function useValue(): T {
     return useSyncExternalStore(external.subscribe, external.getSnapshot, external.getSnapshot);
   }
+
+  void reloadFromStorage();
 
   return {
     subscribe: external.subscribe,

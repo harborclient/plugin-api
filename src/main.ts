@@ -23,4 +23,4 @@ export type {
   PluginServer,
   PluginStorage,
   ScriptPhase
-} from './types';
+} from './types.js';

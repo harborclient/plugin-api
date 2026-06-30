@@ -123,9 +123,9 @@ export async function buildRenderer(options: BuildRendererOptions = {}): Promise
     ...(jsxRuntime === 'none'
       ? {}
       : {
-          jsx: 'automatic' as const,
-          jsxImportSource: '@harborclient/sdk'
-        })
+        jsx: 'automatic' as const,
+        jsxImportSource: '@harborclient/sdk'
+      })
   };
 
   if (watch) {
@@ -145,6 +145,16 @@ export async function buildRenderer(options: BuildRendererOptions = {}): Promise
 }
 
 /**
+ * Escapes a string for use as a literal in a RegExp.
+ *
+ * @param value - Raw string to escape.
+ * @returns Regex-safe literal.
+ */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * esbuild plugin that stubs Node built-in modules with empty exports.
  *
  * Use when a dependency imports Node modules that are unused at runtime in the
@@ -158,7 +168,7 @@ export function nodeBuiltinStubsPlugin(moduleNames: readonly string[]): Plugin {
     name: 'node-builtins-stub',
     setup(build) {
       for (const moduleName of moduleNames) {
-        build.onResolve({ filter: new RegExp(`^${moduleName}$`) }, () => ({
+        build.onResolve({ filter: new RegExp(`^${escapeRegExp(moduleName)}$`) }, () => ({
           path: moduleName,
           namespace: 'node-stub'
         }));

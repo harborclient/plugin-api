@@ -6,11 +6,12 @@ import type { ReactNode, ReactPortal } from 'react';
  * the sidebar or other overflow-hidden plugin webview containers.
  *
  * @param node - Modal element to render.
- * @returns Portal into document.body, or the node unchanged when document is unavailable.
+ * @returns Portal into document.body.
+ * @throws When `document` is unavailable (SSR, tests, or misconfigured host).
  */
 export function portalToBody(node: ReactNode): ReactPortal {
-  if (typeof document !== 'undefined') {
-    return createPortal(node, document.body);
+  if (typeof document === 'undefined') {
+    throw new Error('portalToBody requires a DOM document');
   }
-  return node as ReactPortal;
+  return createPortal(node, document.body);
 }

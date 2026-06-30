@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- `createStorageStore` now hydrates from storage on creation.
+
 ## 0.6.17 - 2026-06-30
 
 - Add `@harborclient/sdk/react-dom` with host-delegated `createPortal` for plugin portals.

@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import type { Disposable, PluginContext, ThemeContribution } from '../types';
+import type { Disposable, PluginContext, ThemeContribution } from '../types.js';
 
 /**
  * Installs the HarborClient renderer React instance for plugin JSX and hooks.

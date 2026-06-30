@@ -1,6 +1,6 @@
 import { describe, expect, it, jest } from '@jest/globals';
-import type { PluginContext, ThemeContribution } from '../types';
-import { defineTheme, registerTheme } from './index.js';
+import type { PluginContext, ThemeContribution } from './types';
+import { defineTheme, registerTheme } from './runtime/index.js';
 
 /**
  * Builds a minimal plugin context mock for registerTheme tests.

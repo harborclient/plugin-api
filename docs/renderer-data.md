@@ -174,10 +174,13 @@ read/diff/notify logic in every plugin.
 
 - **`createStorageStore<T>({ storage, key, parse, equals?, keepCurrentWhenMissing? })`**
   — returns `{ subscribe, getSnapshot, useValue, reloadFromStorage, set }`.
-  `parse` validates raw storage into a typed snapshot; `set` updates memory and
-  persists (write-through). Default equality uses `JSON.stringify`; pass a custom
-  `equals` for cheaper comparisons. Set `keepCurrentWhenMissing: true` when an
-  absent storage key should not reset in-memory state.
+  Hydrates from storage asynchronously on creation; synchronous `getSnapshot()`
+  may show `parse(undefined)` until hydration completes. `parse` validates raw
+  storage into a typed snapshot; `set` updates memory and persists (write-through).
+  Default equality uses `JSON.stringify`; pass a custom `equals` for cheaper
+  comparisons. Set `keepCurrentWhenMissing: true` when an absent storage key should
+  not reset in-memory state. Await `reloadFromStorage()` when you need the persisted
+  value before a synchronous read.
 - **`syncOnWindowFocus(stores, { intervalMs? })`** — wires `focus`,
   `visibilitychange`, and optional polling to `reloadFromStorage` on one or more
   stores. Returns a `Disposable` for `hc.subscriptions` or React effect cleanup.
@@ -190,8 +193,6 @@ const schemasStore = createStorageStore({
   key: 'schemas',
   parse: (raw) => (Array.isArray(raw) ? raw : [])
 });
-
-await schemasStore.reloadFromStorage();
 
 hc.subscriptions.push(syncOnWindowFocus(schemasStore));
 

@@ -1,6 +1,6 @@
 import type * as React from 'react';
 
-export { Fragment } from './jsx-runtime';
+export { Fragment } from './jsx-runtime.js';
 
 /**
  * Development JSX runtime entry; delegates to the production jsx helper.

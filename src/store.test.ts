@@ -55,6 +55,17 @@ describe('createStorageStore', () => {
     expect(store.getSnapshot()).toEqual([]);
   });
 
+  it('hydrates from storage on creation', async () => {
+    const storage = createMockStorage({ count: 3 });
+    const store = createStorageStore({
+      storage,
+      key: 'count',
+      parse: (raw) => (typeof raw === 'number' ? raw : 0)
+    });
+    await Promise.resolve();
+    expect(store.getSnapshot()).toBe(3);
+  });
+
   it('persists and updates the snapshot via set', async () => {
     const storage = createMockStorage();
     const store = createStorageStore({
@@ -70,6 +81,23 @@ describe('createStorageStore', () => {
     expect(store.getSnapshot()).toEqual(['a']);
     expect(storage.setMock).toHaveBeenCalledWith('items', ['a']);
     expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it('leaves snapshot unchanged and rejects when storage.set fails', async () => {
+    const storage = createMockStorage();
+    const store = createStorageStore({
+      storage,
+      key: 'items',
+      parse: (raw) => (Array.isArray(raw) ? raw : [])
+    });
+    const listener = jest.fn();
+    store.subscribe(listener);
+    storage.setMock.mockRejectedValueOnce(new Error('persist failed'));
+
+    await expect(store.set(['a'])).rejects.toThrow('persist failed');
+
+    expect(store.getSnapshot()).toEqual([]);
+    expect(listener).not.toHaveBeenCalled();
   });
 
   it('skips set when equals reports no change', async () => {
