@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- chore: update version to 1.0.8 and enhance BackButton component accessibility and styling. (`bec3759`)
+
 ## 1.0.7 - 2026-07-01
 
 - Refactor Modal and SegmentedTabs components for improved code clarity. (`0ac6fce`)

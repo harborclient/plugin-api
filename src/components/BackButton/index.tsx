@@ -10,12 +10,12 @@ interface Props {
   onClick: () => void;
 
   /**
-   * Default accessible name when `ariaLabel` is not provided.
+   * Visible button text and default accessible name when `ariaLabel` is not provided.
    */
   label?: string;
 
   /**
-   * Accessible name when it should differ from `label`.
+   * Accessible name when it should differ from the visible `label`.
    */
   ariaLabel?: string;
 
@@ -26,28 +26,29 @@ interface Props {
 }
 
 /**
- * Secondary icon back control for nested panel headers.
+ * Secondary back control for nested panel and overlay headers.
  *
- * Matches {@link PanelCloseButton} styling with a left-angle icon instead of close.
+ * Matches {@link PanelCloseButton} sizing with a left-angle icon and visible label.
  *
  * @param onClick - Back navigation handler.
- * @param label - Default accessible name; defaults to "Back".
- * @param ariaLabel - Accessible name override.
+ * @param label - Visible button text; defaults to "Back".
+ * @param ariaLabel - Accessible name override when it should differ from `label`.
  * @param className - Extra classes appended after the layout preset.
  */
 export function BackButton({ onClick, label = 'Back', ariaLabel, className }: Props): JSX.Element {
-  const base = 'inline-flex shrink-0 items-center justify-center py-2';
+  const base = 'inline-flex shrink-0 items-center justify-center gap-1.5 py-1 text-[14px] h-6';
   const classes = className ? `hc-back-button ${base} ${className}` : `hc-back-button ${base}`;
 
   return (
     <Button
       type="button"
-      variant="secondary"
+      variant="toolbar"
       className={classes}
-      aria-label={ariaLabel ?? label}
+      aria-label={ariaLabel}
       onClick={onClick}
     >
-      <FaIcon icon={faAngleLeft} className="h-4 w-4" />
+      <FaIcon icon={faAngleLeft} className="h-4 w-4" aria-hidden />
+      <span>{label}</span>
     </Button>
   );
 }
