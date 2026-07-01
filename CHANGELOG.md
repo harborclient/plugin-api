@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.10 - 2026-07-01
+
 - Update PageSidebar component styles for improved layout. (`3e63d44`)
 
 ## 1.0.9 - 2026-07-01
