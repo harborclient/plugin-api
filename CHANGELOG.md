@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.5 - 2026-07-01
+
 - Update PageHeader component styles to improve padding and layout consistency. (`7205c06`)
 
 ## 1.0.4 - 2026-07-01
