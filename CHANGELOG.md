@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Update PageHeader component styles for improved layout. (`88aa4e7`)
 - Test changelog hook. (`12b6780`)
 
 ## 1.0.1 - 2026-06-30

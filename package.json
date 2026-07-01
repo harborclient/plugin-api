@@ -175,6 +175,7 @@
     "typescript-eslint": "^8.62.0"
   },
   "scripts": {
+    "prepare": "git config --local core.hooksPath .githooks 2>/dev/null || true",
     "build": "tsc -p tsconfig.build.json && node scripts/copy-runtime.mjs && node scripts/assert-dist-publishable.mjs",
     "attw": "attw --profile esm-only --no-summary",
     "format": "prettier --write .",
