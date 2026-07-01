@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Add linting instructions to AGENTS.md. (`440e1de`)
 - Update PageHeader component styles for improved layout. (`88aa4e7`)
 - Test changelog hook. (`12b6780`)
 
