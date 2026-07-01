@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.6 - 2026-07-01
+
 - Refactor PageHeader and SidebarLayout components for improved styling. (`49caa57`)
 
 ## 1.0.5 - 2026-07-01
